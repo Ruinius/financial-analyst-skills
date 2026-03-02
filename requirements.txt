@@ -1,0 +1,7 @@
+yfinance>=0.2.0
+torch
+transformers
+fastapi
+uvicorn
+pandas
+python-multipart
