@@ -87,6 +87,12 @@
       "directory": "financial_data_extraction/shares_outstanding"
     },
     {
+      "name": "Qualitative Assessment",
+      "description": "Assess economic moat, EBITA margin trajectory, and organic growth trajectory from analyst reports, transcripts, or articles. Produces structured outlook that feeds into DCF assumption generation.",
+      "path": "qualitative_assessment/SKILL.md",
+      "directory": "qualitative_assessment"
+    },
+    {
       "name": "Financial Modeling",
       "description": "Build a multi-stage DCF (Discounted Cash Flow) model from historical financial data and qualitative outlook assumptions. Produces WACC, 10-year projections, terminal value, enterprise value, and intrinsic value per share.",
       "path": "financial_modeling/SKILL.md",

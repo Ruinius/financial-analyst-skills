@@ -1,6 +1,6 @@
 # financial-analyst-skills
 
-**Turn any earnings PDF into a full DCF valuation — automatically.**
+**Turn any earnings PDF into a full DCF valuation with AI agents using Skills.**
 
 Drop a financial document into a folder, point an AI agent at the skills in this repo, and get a complete equity research workflow: document classification, structured data extraction, financial calculations, qualitative assessment, and a 10-year discounted cash flow model with an interactive viewer. No databases, no backend, no React — just markdown files, a fine-tuned transformer, and an AI that follows instructions.
 
@@ -46,12 +46,14 @@ All 21 skills are registered in [`skills/skills_metadata.json`](skills/skills_me
 |     |                                                                                |                                                                                      |
 | 4   | [**Document Organization**](skills/document_organization/)                     | Move outputs to `output_data/TICKER/`, create metadata, cross-document date healing  |
 |     |                                                                                |                                                                                      |
-| 5   | [**Financial Modeling**](skills/financial_modeling/)                           | Build a multi-stage DCF from historical data + qualitative outlook                   |
-| 5a  | ↳ [WACC](skills/financial_modeling/wacc/)                                      | Weighted Average Cost of Capital via CAPM (unlever beta → Blume's → bound 7-11%)     |
-| 5b  | ↳ [Assumptions](skills/financial_modeling/assumptions/)                        | Three-stage revenue growth, EBITA margin, capital turnover from history + outlook    |
-| 5c  | ↳ [DCF Model](skills/financial_modeling/dcf/)                                  | 10-year FCF projections + terminal value via Gordon Growth Model                     |
-| 5d  | ↳ [Intrinsic Value](skills/financial_modeling/intrinsic_value/)                | Enterprise Value → equity bridge → intrinsic value per share                         |
-| 5e  | ↳ [JSON Export](skills/financial_modeling/json_export/)                        | Export model to JSON for the interactive HTML viewer                                 |
+| 5   | [**Qualitative Assessment**](skills/qualitative_assessment/)                   | Assess economic moat, margin trajectory, and growth trajectory from analyst reports  |
+|     |                                                                                |                                                                                      |
+| 6   | [**Financial Modeling**](skills/financial_modeling/)                           | Build a multi-stage DCF from historical data + qualitative outlook                   |
+| 6a  | ↳ [WACC](skills/financial_modeling/wacc/)                                      | Weighted Average Cost of Capital via CAPM (unlever beta → Blume's → bound 7-11%)     |
+| 6b  | ↳ [Assumptions](skills/financial_modeling/assumptions/)                        | Three-stage revenue growth, EBITA margin, capital turnover from history + outlook    |
+| 6c  | ↳ [DCF Model](skills/financial_modeling/dcf/)                                  | 10-year FCF projections + terminal value via Gordon Growth Model                     |
+| 6d  | ↳ [Intrinsic Value](skills/financial_modeling/intrinsic_value/)                | Enterprise Value → equity bridge → intrinsic value per share                         |
+| 6e  | ↳ [JSON Export](skills/financial_modeling/json_export/)                        | Export model to JSON for the interactive HTML viewer                                 |
 
 ## Project Structure
 
@@ -62,6 +64,7 @@ financial-analyst-skills/
 │   ├── financial_data_extraction/
 │   ├── financial_calculations/
 │   ├── document_organization/
+│   ├── qualitative_assessment/
 │   └── financial_modeling/
 ├── tools/                  # Shared tools and utilities
 │   ├── model/                        # (gitignored) Tiger-transformer model files
