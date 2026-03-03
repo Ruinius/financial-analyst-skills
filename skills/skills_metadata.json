@@ -1,0 +1,126 @@
+{
+  "version": "1.0",
+  "description": "Registry of Tiger-Skills AI orchestrated processes.",
+  "skills": [
+    {
+      "name": "Skills Orchestrator Pipeline",
+      "description": "A runbook for reasoning models to execute the complete tiger-skills pipeline in the correct dependency order. Routes documents through different skill chains based on document type.",
+      "path": "PIPELINE.md",
+      "directory": ""
+    },
+    {
+      "name": "Document Classification",
+      "description": "Classify financial PDFs by extracting company identity, document type, and date metadata. Validates ticker via Yahoo Finance with multi-step fallback.",
+      "path": "document_classification/SKILL.md",
+      "directory": "document_classification"
+    },
+    {
+      "name": "Document Organization",
+      "description": "Move processed documents from processing_data/ to output_data/TICKER/, create/update company metadata, and perform cross-document date healing.",
+      "path": "document_organization/SKILL.md",
+      "directory": "document_organization"
+    },
+    {
+      "name": "Financial Calculations",
+      "description": "Compute derived financial metrics (EBITA, tax rates, invested capital, ROIC) from previously extracted data. All calculations are pure math \u2014 no LLM calls needed.",
+      "path": "financial_calculations/SKILL.md",
+      "directory": "financial_calculations"
+    },
+    {
+      "name": "EBITA Calculation",
+      "description": "Calculate EBITA (Earnings Before Interest, Tax, and Amortization) from income statement and GAAP reconciliation data.",
+      "path": "financial_calculations/ebita/SKILL.md",
+      "directory": "financial_calculations/ebita"
+    },
+    {
+      "name": "Invested Capital Calculation",
+      "description": "Calculate Net Working Capital, Net Long-Term Operating Assets, and total Invested Capital from balance sheet data.",
+      "path": "financial_calculations/invested_capital/SKILL.md",
+      "directory": "financial_calculations/invested_capital"
+    },
+    {
+      "name": "Summary Table",
+      "description": "Compile all calculated metrics into a final summary table with NOPAT and ROIC.",
+      "path": "financial_calculations/summary_table/SKILL.md",
+      "directory": "financial_calculations/summary_table"
+    },
+    {
+      "name": "Tax Rate Calculation",
+      "description": "Calculate effective tax rate and adjusted (operating) tax rate from income statement and EBITA data.",
+      "path": "financial_calculations/tax/SKILL.md",
+      "directory": "financial_calculations/tax"
+    },
+    {
+      "name": "Financial Data Extraction",
+      "description": "Extract structured financial data from classified PDFs. Contains 5 sub-skills for balance sheet, income statement, shares outstanding, organic growth, and GAAP reconciliation.",
+      "path": "financial_data_extraction/SKILL.md",
+      "directory": "financial_data_extraction"
+    },
+    {
+      "name": "Balance Sheet Extraction",
+      "description": "Extract balance sheet line items from a financial PDF, standardize names via Tiger-Transformer, and validate calculations.",
+      "path": "financial_data_extraction/balance_sheet/SKILL.md",
+      "directory": "financial_data_extraction/balance_sheet"
+    },
+    {
+      "name": "GAAP Reconciliation Extraction",
+      "description": "Extract GAAP-to-non-GAAP operating income or EBITDA reconciliation tables from earnings announcements.",
+      "path": "financial_data_extraction/gaap_reconciliation/SKILL.md",
+      "directory": "financial_data_extraction/gaap_reconciliation"
+    },
+    {
+      "name": "Income Statement Extraction",
+      "description": "Extract income statement line items from a financial PDF, standardize names via Tiger-Transformer, and normalize expense signs.",
+      "path": "financial_data_extraction/income_statement/SKILL.md",
+      "directory": "financial_data_extraction/income_statement"
+    },
+    {
+      "name": "Organic Growth Extraction",
+      "description": "Extract organic/constant-currency growth percentage and prior-year revenue from a financial PDF.",
+      "path": "financial_data_extraction/organic_growth/SKILL.md",
+      "directory": "financial_data_extraction/organic_growth"
+    },
+    {
+      "name": "Shares Outstanding Extraction",
+      "description": "Extract basic and diluted shares outstanding from a financial PDF.",
+      "path": "financial_data_extraction/shares_outstanding/SKILL.md",
+      "directory": "financial_data_extraction/shares_outstanding"
+    },
+    {
+      "name": "Financial Modeling",
+      "description": "Build a multi-stage DCF (Discounted Cash Flow) model from historical financial data and qualitative outlook assumptions. Produces WACC, 10-year projections, terminal value, enterprise value, and intrinsic value per share.",
+      "path": "financial_modeling/SKILL.md",
+      "directory": "financial_modeling"
+    },
+    {
+      "name": "DCF Assumptions",
+      "description": "Create the three-stage DCF assumptions (revenue growth, EBITA margin, marginal capital turnover) by blending historical trends with qualitative outlook.",
+      "path": "financial_modeling/assumptions/SKILL.md",
+      "directory": "financial_modeling/assumptions"
+    },
+    {
+      "name": "DCF Model",
+      "description": "Project 10 years of free cash flow using three-stage interpolated assumptions, calculate terminal value, and derive enterprise value via discounted cash flow.",
+      "path": "financial_modeling/dcf/SKILL.md",
+      "directory": "financial_modeling/dcf"
+    },
+    {
+      "name": "Intrinsic Value Calculation",
+      "description": "Convert Enterprise Value to equity value per share by subtracting debt, adding cash, and dividing by diluted shares outstanding.",
+      "path": "financial_modeling/intrinsic_value/SKILL.md",
+      "directory": "financial_modeling/intrinsic_value"
+    },
+    {
+      "name": "JSON Export",
+      "description": "Export the complete DCF model, assumptions, and intrinsic value into a machine-readable JSON file for the interactive financial model viewer.",
+      "path": "financial_modeling/json_export/SKILL.md",
+      "directory": "financial_modeling/json_export"
+    },
+    {
+      "name": "WACC Calculation",
+      "description": "Calculate Weighted Average Cost of Capital using CAPM for equity cost and market data for debt cost. WACC is the discount rate used in the DCF model.",
+      "path": "financial_modeling/wacc/SKILL.md",
+      "directory": "financial_modeling/wacc"
+    }
+  ]
+}
