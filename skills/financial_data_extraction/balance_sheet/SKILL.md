@@ -8,14 +8,21 @@ description: Extract balance sheet line items from a financial PDF, standardize 
 ## Prerequisites
 
 - Classification metadata available in `processing_data/TICKER_DOCTYPE_DATE_temp.md`
-- Tiger-Transformer server running at `http://localhost:8000`
+- If Tiger-Transformer is not running on localhost:8000 then ask the user to run `.\tools\start_transformer.bat`
+- If a static file server is not running on localhost:8181 then ask the user to run `python -m http.server 8181 --bind 127.0.0.1`
+
+**DO NOT EVER start servers without human user.**
 
 ## Step-by-Step Instructions
 
 ### Step 1: Read the PDF and Classification Metadata
 
 1. Read the classification `.md` file to get: `ticker`, `document_type`, `time_period`, `period_end_date`
-2. Read the PDF directly using multimodal capabilities (do NOT use text extraction libraries)
+2. Open the PDF in the browser using the `browser_subagent` tool:
+   - Navigate to `http://localhost:8181/processing_data/{filename}`
+   - Navigate to the page(s) containing the **Consolidated Balance Sheet**
+   - For large filings (10-K, 10-Q), use the table of contents or scroll to the financial statements section
+3. Do NOT use PyPDF2 or other text extraction libraries
 
 ### Step 2: Locate and Verify the Balance Sheet Section
 
@@ -30,7 +37,7 @@ description: Extract balance sheet line items from a financial PDF, standardize 
 
 ### Step 3: Extract Line Items
 
-Extract every line item from the balance sheet table for the **current period column only** (the column matching `period_end_date`).
+Extract **every** line item from the balance sheet table for the **current period column only** (the column matching `period_end_date`). The extraction must be **complete** — do not skip or abbreviate any rows.
 
 **Output JSON structure:**
 ```json
@@ -49,6 +56,26 @@ Extract every line item from the balance sheet table for the **current period co
 }
 ```
 
+> ⚠️ **COMPLETENESS CHECK — MANDATORY**
+>
+> After extraction, verify that ALL of the following section totals are present:
+>
+> | # | Required Total | Category |
+> |---|---|---|
+> | 1 | Total Current Assets | `current_assets` |
+> | 2 | Total Assets | `noncurrent_assets` (or computed) |
+> | 3 | Total Current Liabilities | `current_liabilities` |
+> | 4 | Total Liabilities | `noncurrent_liabilities` (or computed) |
+> | 5 | Total Stockholders' Equity | `stockholders_equity` |
+>
+> Additionally, verify that each section has **individual line items**, not just the totals. A valid balance sheet extraction should have:
+> - **Current Assets**: At minimum Cash, Receivables, and 1+ other items
+> - **Non-Current Assets**: At minimum PP&E/Fixed Assets, and 1+ other items
+> - **Current Liabilities**: At minimum Payables, and 1+ other items
+> - **Non-Current Liabilities**: At minimum Long-term debt or 1+ other items
+>
+> If any section is missing or has only a total with no breakdown, go back to the PDF and re-read. An incomplete balance sheet will cause Invested Capital calculations to be nonsensical.
+
 **Extraction rules:**
 - Extract values EXACTLY as shown — do NOT round, estimate, or calculate
 - `line_name`: Shorten names, remove "net of..." notes
@@ -57,6 +84,7 @@ Extract every line item from the balance sheet table for the **current period co
 - `unit`: Only set if EXPLICITLY stated (e.g., "In millions"). Otherwise null
 - `currency`: Use the document's actual currency — do NOT assume or convert to USD. Common values: USD, EUR, GBP, JPY, CAD, RMB, CHF, AUD, KRW, INR, SEK, etc.
 - Include ALL subtotals and totals (Total Current Assets, Total Assets, Total Liabilities, etc.)
+- Include ALL individual line items within each section — do NOT summarize or aggregate
 - Maintain the exact order from the document
 
 **Anti-hallucination rules:**
@@ -80,22 +108,32 @@ Send **ALL line items together in a single batch request** to the Tiger-Transfor
 
 > ⚠️ **CRITICAL: Send ALL items at once, not one at a time.** The model uses a sliding context window that looks at the 2 items before and 2 items after each line to classify it. Sending items individually (or in small groups) strips this context and causes misclassifications. Always send the complete list in document order.
 
-**How it works internally:** For each item, the server constructs:
-```
-[prev_2_name] [prev_1_name] [line_category] [line_name] [next_1_name] [next_2_name]
-```
-Items at the edges use `<START>` / `<END>` sentinel tokens.
+**Avoid Shell Escaping Issues:** Do NOT try to send the large JSON payload via `curl` or `Invoke-RestMethod` inline on the command line. Write a temporary Python script (`tmp/run_bs_transformer.py`) using the `write_to_file` tool to send the HTTP request, then execute that script.
 
-**Request:** `POST http://localhost:8000/predict/balance-sheet`
-```json
-{
+**Example Temporary Python Script:**
+```python
+import urllib.request
+import json
+import sys
+
+payload = {
     "items": [
         {"line_name": "Cash and cash equivalents", "line_category": "current_assets", "line_order": 0},
         {"line_name": "Short-term investments", "line_category": "current_assets", "line_order": 1},
-        {"line_name": "Trade receivables", "line_category": "current_assets", "line_order": 2},
-        ...all remaining items in document order...
+        # ... your extracted items ...
     ]
 }
+
+req = urllib.request.Request('http://localhost:8000/predict/balance-sheet', 
+                             method='POST', 
+                             headers={'Content-Type': 'application/json'}, 
+                             data=json.dumps(payload).encode('utf-8'))
+
+try:
+    response = urllib.request.urlopen(req)
+    print(response.read().decode('utf-8'))
+except Exception as e:
+    print(f"Error: {e}", file=sys.stderr)
 ```
 
 **Response:** Each item gets:
@@ -153,7 +191,7 @@ Append the following section to the document's `.md` file:
 
 ## Error Handling
 
-- If PDF cannot be read → Inform user, skip
+- If PDF cannot be opened in the browser → Inform user, skip
 - If balance sheet section not found → Inform user, skip
 - If transformer server is not running → Inform user (run `.\tools\start_transformer.bat`)
 - If validation fails → Save data anyway, report errors in markdown

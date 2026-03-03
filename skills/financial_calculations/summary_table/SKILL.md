@@ -85,14 +85,23 @@ Append to the document's `.md` file:
 - Adjusted tax rate uses 25% marginal rate (0% for amortization/impairment)
 ```
 
-### Step 5: Validate Cross-Checks
+### Step 5: Validate Cross-Checks (MANDATORY)
 
-Perform these sanity checks and note any issues:
+Perform these sanity checks. **Items marked ❌ are hard errors** — go back and fix the upstream extraction before proceeding.
 
-1. **NOPAT should be positive** for profitable companies
-2. **ROIC should be reasonable** (typically 5-50% for healthy companies; can be negative or >100% for capital-light businesses)
-3. **EBITA Margin** should be between 0% and 60% for most companies
-4. **Revenue × EBITA Margin ≈ EBITA** (cross-check)
+| # | Check | Expected | If Violated |
+|---|-------|----------|-------------|
+| 1 | Revenue > 0 | Always positive | ❌ **Re-extract Income Statement** — Revenue was not captured |
+| 2 | Tax Rate ≠ 0% | Never exactly zero | ❌ **Re-run Tax Rate skill** — IS is missing `income_tax_provision` |
+| 3 | NOPAT sign matches EBITA sign | Same direction | ⚠️ Tax rate may be inverted |
+| 4 | Invested Capital ≠ 0 | Non-zero | ❌ **Re-extract Balance Sheet** — BS is incomplete |
+| 5 | EBITA Margin 0-60% | Typical range | ⚠️ Flag if outside range |
+| 6 | Revenue × EBITA Margin ≈ EBITA | Cross-check | ⚠️ Calculation error if >1% off |
+| 7 | ROIC between -50% and 200% | Typical range | ⚠️ Flag if outside; >1000% means IC is near zero = incomplete BS |
+| 8 | Organic/Simple Growth ≠ N/A | Always a number | ❌ **Re-run Organic Growth skill** — prior year revenue was not extracted |
+| 9 | Organic/Simple Growth ≠ 0.0% | Almost never exactly zero | ⚠️ Double-check extraction |
+
+If any ❌ error is found, **stop** and note which upstream skill needs to be re-run before the summary can be finalized.
 
 ---
 

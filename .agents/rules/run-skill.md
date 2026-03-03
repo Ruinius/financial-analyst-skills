@@ -2,5 +2,9 @@
 trigger: always_on
 ---
 
-When running skill scripts, use: "venv\Scripts\activate && python <script>" to ensure the venv is used.
-When creating temporary or scratch scripts, save them in the project's tmp/ directory (e.g., tmp/scratch.py), never to C:\ or the user's home folder.
+Use "venv\Scripts\activate ; python <script>" for python scripts.
+Temporary logs and scripts saved into tmp/ directory (e.g., tmp/scratch.py), NEVER to C:\ OR user home folder OR project root folder.
+Localhost:8000 is tiger_transformer_server.
+Localhost:8181 is reserved for agent browser.
+Localhost:3000 is frontend_server.
+DO NOT START servers. Ask the human user to start the needed server.

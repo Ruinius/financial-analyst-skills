@@ -12,13 +12,13 @@ This is a skill-based reimplementation of [tiger-cafe](https://github.com/Ruiniu
 
 ## Skills
 
-| Skill | Status | Description |
-|-------|--------|-------------|
-| [Document Classification](skills/document_classification/) | ✅ Built | Classify PDFs, extract metadata, validate tickers via Yahoo Finance |
-| Financial Data Extraction | 🔲 Planned | Extract balance sheets, income statements, shares, growth, GAAP reconciliation |
-| Financial Calculations | 🔲 Planned | Compute EBITA, tax rates, invested capital, summary tables |
-| Document Organization | 🔲 Planned | Organize outputs by ticker, cross-document date healing |
-| Financial Modeling | 🔲 Planned | DCF modeling from historical data |
+| Skill                                                      | Status     | Description                                                                    |
+| ---------------------------------------------------------- | ---------- | ------------------------------------------------------------------------------ |
+| [Document Classification](skills/document_classification/) | ✅ Built   | Classify PDFs, extract metadata, validate tickers via Yahoo Finance            |
+| Financial Data Extraction                                  | 🔲 Planned | Extract balance sheets, income statements, shares, growth, GAAP reconciliation |
+| Financial Calculations                                     | 🔲 Planned | Compute EBITA, tax rates, invested capital, summary tables                     |
+| Document Organization                                      | 🔲 Planned | Organize outputs by ticker, cross-document date healing                        |
+| Financial Modeling                                         | 🔲 Planned | DCF modeling from historical data                                              |
 
 ## Project Structure
 
@@ -49,6 +49,7 @@ tiger-skills/
 ### Setup
 
 1. **Clone and Install:**
+
    ```bash
    git clone https://github.com/Ruinius/tiger-skills.git
    cd tiger-skills
@@ -59,14 +60,23 @@ tiger-skills/
    ```
 
 2. **Configure Tiger-Transformer:**
-   The standardization skills require the [tiger-transformer](https://github.com/Ruinius/tiger-transformer) model.
-   - Clone the repository adjacent to this one, or set the `TIGER_TRANSFORMER_PATH` environment variable.
-   - If your path differs from `F:/AIML projects/tiger-transformer`, update it in `tools/tiger_transformer_server.py` or set the env var.
+   The standardization skills require the [tiger-transformer](https://huggingface.co/Ruinius/tiger-transformer) model.
+   - Download the model repository files (including `model.safetensors`, `config.json`, `label_map.json`, etc.) from HuggingFace.
+   - Create a `tools/model/` directory in this project and place all downloaded files inside it.
 
 3. **Start the Local Services:**
-   Before running extraction skills, start the transformer server:
+   Before running extraction skills, you need to start two local servers in separate terminals:
+
+   A. Start the transformer server (Port 8000):
+
    ```bash
    .\tools\start_transformer.bat
+   ```
+
+   B. Start the static file server for the browser agent (Port 8181):
+
+   ```bash
+   python -m http.server 8181 --bind 127.0.0.1
    ```
 
 ### Usage

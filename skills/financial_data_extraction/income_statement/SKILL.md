@@ -8,14 +8,21 @@ description: Extract income statement line items from a financial PDF, standardi
 ## Prerequisites
 
 - Classification metadata available in `processing_data/TICKER_DOCTYPE_DATE_temp.md`
-- Tiger-Transformer server running at `http://localhost:8000`
+- If Tiger-Transformer is not running on localhost:8000 then ask the user to run `.\tools\start_transformer.bat`
+- If a static file server is not running on localhost:8181 then ask the user to run `python -m http.server 8181 --bind 127.0.0.1`
+
+**DO NOT EVER start servers without human user.**
 
 ## Step-by-Step Instructions
 
 ### Step 1: Read the PDF and Classification Metadata
 
 1. Read the classification `.md` file to get: `ticker`, `document_type`, `time_period`, `period_end_date`
-2. Read the PDF directly using multimodal capabilities
+2. Open the PDF in the browser using the `browser_subagent` tool:
+   - Navigate to `http://localhost:8181/processing_data/{filename}`
+   - Navigate to the page(s) containing the **Consolidated Statement of Income** (or equivalent)
+   - For large filings (10-K, 10-Q), use the table of contents or scroll to the financial statements section
+3. Do NOT use PyPDF2 or other text extraction libraries
 
 ### Step 2: Locate and Verify the Income Statement Section
 
@@ -29,7 +36,7 @@ description: Extract income statement line items from a financial PDF, standardi
 
 ### Step 3: Extract Line Items
 
-Extract every line item from revenue through net income for the **current period column**.
+Extract **every** line item from revenue through net income for the **current period column**. The extraction must be **complete** — do not skip or abbreviate any rows.
 
 **Output JSON structure:**
 ```json
@@ -48,6 +55,20 @@ Extract every line item from revenue through net income for the **current period
 }
 ```
 
+> ⚠️ **COMPLETENESS CHECK — MANDATORY**
+>
+> After extraction, verify that ALL of the following critical line items are present:
+>
+> | # | Required Line Item | Typical Standardized Name |
+> |---|---|---|
+> | 1 | Revenue / Total Revenue | `revenue` or `total_revenue` |
+> | 2 | Operating Income / Operating Profit | `operating_income` |
+> | 3 | Income Before Income Taxes | `income_before_taxes` |
+> | 4 | Income Tax Expense / Benefit | `income_tax_provision` |
+> | 5 | Net Income | `net_income` |
+>
+> If **any** of these 5 are missing, go back to the PDF and re-read the income statement more carefully. These lines are required for downstream calculations (EBITA, Tax Rate, NOPAT). Do NOT proceed with an incomplete extraction.
+
 **Extraction rules:**
 - Extract values EXACTLY as shown — do NOT round, estimate, or calculate
 - `line_name`: Shorten names, remove "net of..." notes
@@ -57,6 +78,7 @@ Extract every line item from revenue through net income for the **current period
 - `unit`: Only set if EXPLICITLY stated (e.g., "In millions", "百万円"). Otherwise null
 - **STOP after Net Income** — do not extract EPS or share count rows
 - Include ALL subtotals: Revenue, Gross Profit, Operating Income, Net Income, etc.
+- Include ALL intermediate items between Operating Income and Net Income (interest income, interest expense, equity method gains/losses, FX, other income/expense, etc.)
 - Maintain exact document order
 
 **Anti-hallucination rules:**
@@ -71,22 +93,33 @@ Send **ALL line items together in a single batch request** to the Tiger-Transfor
 
 > ⚠️ **CRITICAL: Send ALL items at once, not one at a time.** The model uses a sliding context window that looks at the 2 items before and 2 items after each line to determine its classification. Sending items individually strips this context and causes misclassifications (e.g., "Amortization of intangibles" alone may classify as "revenue" at 52% confidence, but with full context it correctly classifies as "amortization_acquired" at 99%).
 
-**How it works internally:** For each item, the server constructs:
-```
-[prev_2_name] [prev_1_name] [line_category] [line_name] [next_1_name] [next_2_name]
-```
-Items at the edges use `<START>` / `<END>` sentinel tokens.
+**Avoid Shell Escaping Issues:** Do NOT try to send the large JSON payload via `curl` or `Invoke-RestMethod` inline on the command line. Write a temporary Python script (`tmp/run_is_transformer.py`) using the `write_to_file` tool to send the HTTP request, then execute that script.
 
-**Request:** `POST http://localhost:8000/predict/income-statement`
-```json
-{
+**Example Temporary Python Script:**
+```python
+import urllib.request
+import json
+import sys
+
+payload = {
     "items": [
         {"line_name": "Subscription revenue", "line_category": "income_statement", "line_order": 0},
         {"line_name": "Product revenue", "line_category": "income_statement", "line_order": 1},
         {"line_name": "Total revenue", "line_category": "income_statement", "line_order": 2},
-        ...all remaining items in document order...
+        # ... your extracted items ...
     ]
 }
+
+req = urllib.request.Request('http://localhost:8000/predict/income-statement', 
+                             method='POST', 
+                             headers={'Content-Type': 'application/json'}, 
+                             data=json.dumps(payload).encode('utf-8'))
+
+try:
+    response = urllib.request.urlopen(req)
+    print(response.read().decode('utf-8'))
+except Exception as e:
+    print(f"Error: {e}", file=sys.stderr)
 ```
 
 **Response:** Each item gets:

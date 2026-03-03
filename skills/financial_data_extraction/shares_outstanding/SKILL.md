@@ -9,13 +9,19 @@ description: Extract basic and diluted shares outstanding from a financial PDF.
 
 - Classification metadata available in `processing_data/TICKER_DOCTYPE_DATE_temp.md`
 - No external services required (LLM-only extraction)
+- If a static file server is not running on localhost:8181 then ask the user to run `python -m http.server 8181 --bind 127.0.0.1`
+
+**DO NOT EVER start servers without human user.**
 
 ## Step-by-Step Instructions
 
 ### Step 1: Read the PDF and Classification Metadata
 
 1. Read the classification `.md` file to get: `time_period`, `period_end_date`
-2. Read the PDF directly using multimodal capabilities
+2. Open the PDF in the browser using the `browser_subagent` tool:
+   - Navigate to `http://localhost:8181/processing_data/{filename}`
+   - Navigate to the page(s) containing share count data (usually the income statement or EPS section)
+3. Do NOT use PyPDF2 or other text extraction libraries
 
 ### Step 2: Find Share Count Data
 

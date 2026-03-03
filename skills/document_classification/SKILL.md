@@ -11,6 +11,9 @@ This skill takes a PDF from `input_data/`, classifies it, extracts metadata, val
 
 - Python 3.10+ with `yfinance` installed (`pip install yfinance`) — used only for ticker validation
 - PDFs placed in `input_data/` directory at the project root
+- If a static file server is not running on localhost:8181 then ask the user to run `python -m http.server 8181 --bind 127.0.0.1`
+
+**DO NOT EVER start servers without human user.**
 
 ## Inputs
 
@@ -34,10 +37,14 @@ This skill takes a PDF from `input_data/`, classifies it, extracts metadata, val
 
 ### Step 2: Read the PDF
 
-1. Read the PDF file directly using multimodal capabilities (e.g., `view_file` on the PDF path)
-2. The AI should read the PDF natively — do NOT use PyPDF2 or other text extraction libraries
-3. This approach preserves table layout, handles encrypted PDFs, and works with scanned documents
-4. If the PDF cannot be read, stop and inform the user
+1. Ensure a background process running `python -m http.server 8181` is active in the project root.
+2. Open the PDF in the browser using the `browser_subagent` tool:
+   - Navigate to the PDF via the local server, e.g., `http://localhost:8181/processing_data/{filename}`
+   - The browser renders PDFs natively with full visual fidelity
+2. Read the first 1–3 pages to extract classification metadata (company name, ticker, document type, dates)
+3. For large documents (10-K, 10-Q, analyst reports), you do NOT need to read every page — focus on the cover page and table of contents
+4. Do NOT use PyPDF2 or other text extraction libraries — the browser approach preserves table layouts and handles scanned/image-based documents
+5. If the PDF cannot be opened in the browser, stop and inform the user
 
 ### Step 3: Classify the Document
 
@@ -175,7 +182,7 @@ If any field fails validation, correct it. If it cannot be corrected with confid
 
 ## Error Handling
 
-- If PDF cannot be read → Inform user, skip this PDF
+- If PDF cannot be opened in the browser → Inform user, skip this PDF
 - If classification fails → Retry once, then inform user
 - If ticker validation completely fails → Ask human user for the correct ticker
 - If date extraction fails → Set failed fields to null, proceed with available data

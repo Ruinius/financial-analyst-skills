@@ -10,6 +10,9 @@ description: Extract GAAP-to-non-GAAP operating income or EBITDA reconciliation 
 - Classification metadata available in `processing_data/TICKER_DOCTYPE_DATE_temp.md`
 - **Only runs for `earnings_announcement` document types** — skip for 10-Q, 10-K, etc.
 - No external services required (LLM-only)
+- If a static file server is not running on localhost:8181 then ask the user to run `python -m http.server 8181 --bind 127.0.0.1`
+
+**DO NOT EVER start servers without human user.**
 
 ## Step-by-Step Instructions
 
@@ -21,7 +24,10 @@ description: Extract GAAP-to-non-GAAP operating income or EBITDA reconciliation 
 
 ### Step 2: Read the PDF
 
-Read the PDF directly using multimodal capabilities.
+Open the PDF in the browser using the `browser_subagent` tool:
+- Navigate to `http://localhost:8181/processing_data/{filename}`
+- Navigate to the latter pages of the earnings press release where reconciliation tables are typically found
+- Do NOT use PyPDF2 or other text extraction libraries
 
 ### Step 3: Locate the Reconciliation Table
 

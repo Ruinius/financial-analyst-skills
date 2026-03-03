@@ -87,35 +87,54 @@ def load_mappings():
         logger.warning(f"Income statement mapping not found at {is_path}")
 
 def load_model():
-    """Load the FINBERT model and tokenizer."""
-    # Path to tiger-transformer/models - can be overridden via environment variable
-    default_base = Path("F:/AIML projects/tiger-transformer")
-    base_dir = Path(os.getenv("TIGER_TRANSFORMER_PATH", str(default_base)))
+    """Load the transformer model and tokenizer from the local model directory."""
+    tools_dir = Path(__file__).parent
     
-    model_dir = base_dir / "models" / "financial_transformer"
-    label_map_path = base_dir / "models" / "label_map.json"
+    model_dir = tools_dir / "model"
+    label_map_path = model_dir / "label_map.json"
 
     if not model_dir.exists():
-        raise RuntimeError(f"Model directory not found: {model_dir}")
+        raise RuntimeError(f"Model directory not found at {model_dir}. Please ensure model files are present.")
 
     logger.info(f"Loading model from {model_dir}...")
-    state.tokenizer = AutoTokenizer.from_pretrained(str(model_dir))
-    state.model = AutoModelForSequenceClassification.from_pretrained(str(model_dir))
+    
+    # Initialize tokenizer and model
+    try:
+        model_path_str = str(model_dir)
+        state.tokenizer = AutoTokenizer.from_pretrained(model_path_str)
+        state.model = AutoModelForSequenceClassification.from_pretrained(model_path_str)
+    except Exception as e:
+        logger.error(f"Failed to load local model files: {e}")
+        raise
 
     # Load label mapping
     if label_map_path.exists():
-        with open(label_map_path, encoding="utf-8") as f:
-            label2id = json.load(f)
-        id2label = {int(v): k for k, v in label2id.items()}
-        state.model.config.id2label = id2label
-        state.model.config.label2id = label2id
-        logger.info(f"Loaded label map with {len(id2label)} entries")
+        try:
+            with open(label_map_path, encoding="utf-8") as f:
+                label2id = json.load(f)
+            id2label = {int(v): k for k, v in label2id.items()}
+            
+            # Update model config
+            state.model.config.id2label = id2label
+            state.model.config.label2id = label2id
+            logger.info(f"Loaded label map with {len(id2label)} labels")
+        except Exception as e:
+            logger.error(f"Failed to load label map: {e}")
+    else:
+        logger.warning(f"Label map not found at {label_map_path}")
 
-    # GPU Check
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    state.model = state.model.to(device)
-    state.model.eval()
-    logger.info(f"Model loaded successfully on {device}")
+    # Move to GPU if available
+    try:
+        if torch.cuda.is_available():
+            state.model = state.model.cuda()
+            logger.info("Model loaded successfully on GPU")
+        else:
+            logger.info("Model loaded successfully on CPU")
+
+        state.model.eval()
+    except Exception as e:
+        logger.error(f"Failed to initialize model: {e}")
+        raise
 
 @app.on_event("startup")
 def startup_event():

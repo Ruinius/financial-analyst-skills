@@ -10,8 +10,10 @@ This skill reads a classified PDF from `processing_data/` and extracts structure
 ## Prerequisites
 
 - Skill 1 (Document Classification) must have been run first
-- Tiger-Transformer server running at `http://localhost:8000` (needed for balance sheet and income statement standardization)
-  - Start with: `.\tools\start_transformer.bat`
+- If Tiger-Transformer is not running on localhost:8000 then ask the user to run `.\tools\start_transformer.bat`
+- If a static file server is not running on localhost:8181 then ask the user to run `python -m http.server 8181 --bind 127.0.0.1`
+
+**DO NOT EVER start servers without human user.**
 
 ## Inputs
 
@@ -37,8 +39,8 @@ This skill contains 5 sub-skills that should be run in order:
 ### Execution Order
 
 1. Read the classification metadata from the `.md` file (ticker, document_type, time_period, period_end_date)
-2. Read the PDF directly using multimodal capabilities
-3. Run sub-skills **2a** and **2b** first (they are independent of each other)
+2. Open the PDF in the browser using the `browser_subagent` tool (navigate to `http://localhost:8181/processing_data/{filename}`)
+3. Navigate to the relevant pages for each sub-skill (e.g., balance sheet, income statement). You do NOT need to read every page — use page navigation to jump to the sections you need.
 4. Run **2c** (can run in parallel with 2a/2b)
 5. Run **2d** after **2b** (needs income statement revenue data)
 6. Run **2e**

@@ -4,3 +4,4 @@ processing_data/
 venv/
 .vscode/
 tmp/
+tools/model

@@ -32,14 +32,37 @@ From the document's `.md` file, read:
 
 ### Step 3: Add Non-GAAP Adjustments
 
-If GAAP Reconciliation data is available, process each adjustment item:
+If GAAP Reconciliation data is available, **iterate over EVERY adjustment item** and process it:
 
 **Include only if ALL of these are true:**
 - `Operating` = No (non-operating adjustments only)
-- NOT a Total/Subtotal line
+- NOT a Total/Subtotal line (i.e., `line_category` ≠ "Total")
 - Has a non-zero value
 
-For each qualifying item, add its value to the running EBITA total.
+For each qualifying item, add its value to the running EBITA total. **Also record it in an Adjustments list** for the output table.
+
+> ⚠️ **DO NOT cherry-pick adjustments by name.** You must iterate over ALL items in the GAAP Reconciliation and apply the filter above. Common non-operating adjustments include (but are NOT limited to):
+>
+> | Adjustment Type | Typical Names | Operating? |
+> |---|---|---|
+> | Amortization of acquired intangibles | "Amortization and impairment of intangible assets" | No |
+> | **Impairment of long-lived assets** | "Impairment of long-lived assets", "Goodwill impairment" | **No** |
+> | Restructuring charges | "Restructuring and severance" | No |
+> | Gain/loss on disposal | "Gain on divestiture" | No |
+> | Stock-based compensation | "Share-based compensation expenses" | **Yes** (stays in EBITA) |
+>
+> **Impairment is NON-OPERATING and MUST be added back.** This is a common source of error — impairment charges can be very large (e.g., billions) and missing them will make EBITA wildly wrong.
+
+### Step 3b: Cross-Check Against Non-GAAP Operating Income
+
+The GAAP Reconciliation typically ends with a **Non-GAAP Operating Income** total. Use this to validate:
+
+```
+Expected: EBITA ≈ Non-GAAP Operating Income - SBC addback
+(Because EBITA adds back non-operating items but keeps SBC, while Non-GAAP adds back everything)
+```
+
+If your computed EBITA is dramatically different from `Non-GAAP OpInc - SBC`, you likely missed an adjustment. Go back and re-check.
 
 ### Step 4: Add Income Statement Non-Operating Items
 
@@ -92,6 +115,8 @@ Append to the document's `.md` file:
 - The sign convention matters: GAAP Reconciliation values are addbacks (positive = add to operating income). Income Statement non-operating expenses are negative, so we negate them to add back.
 - If using Income Before Taxes as fallback, note this in the output — EBITA accuracy is lower.
 - Only non-operating items are adjustments. Operating items (like SBC classified as operating) stay in EBITA.
+- **NEVER hardcode which adjustments to include by name.** Always iterate over all GAAP recon items and filter by the `operating` flag. New adjustment types (e.g., impairment, restructuring) will appear in different quarters and must be picked up automatically.
+- The Adjustments table in the output is MANDATORY — it provides an audit trail showing exactly which items were added back and allows the user to verify correctness.
 
 ## Reference
 

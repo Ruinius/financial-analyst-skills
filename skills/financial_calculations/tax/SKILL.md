@@ -69,10 +69,40 @@ Tax Effect = line_value × marginal_rate
 
 ### Step 4: Validate Tax Rates
 
-Flag unusual tax rates:
-- Effective tax rate > 35% → "Appears high"
-- Effective tax rate < 10% → "Appears low"
-- Adjusted tax rate should generally be between 15-30% for US companies
+> ⚠️ **A tax rate of 0% is NEVER acceptable.** If you calculate 0%, something is wrong.
+
+**Hard validation rules:**
+
+| Condition | Action |
+|-----------|--------|
+| Tax rate = 0% | **ERROR** — Re-check: Is `income_tax_provision` missing from the IS? Did you read all lines between Operating Income and Net Income? |
+| Tax rate < 0% | **FLAG** — Report the actual negative rate. This happens in loss quarters with tax benefits. It is real data — do NOT override it. |
+| Tax rate > 50% | **WARNING** — Appears unusually high. Flag but proceed. |
+| Effective tax rate < 5% | **WARNING** — Appears unusually low. Cross-check with Net Income derivation. |
+| Adjusted tax rate between 10-35% | ✅ Normal range for most companies |
+
+**Always compute the actual rate first.** The formula works regardless of whether Income Before Taxes is positive or negative:
+
+```
+Effective Tax Rate = -(Income Tax Expense / Income Before Taxes)
+```
+
+- Profitable quarter: Pre-tax = +6,577, Tax = -1,619 → Rate = 24.6% ✅
+- Loss quarter with tax benefit: Pre-tax = -13,145, Tax = +1,828 → Rate = -(-1,828 / -13,145) = 13.9% ✅
+- Loss quarter with tax expense: Pre-tax = -500, Tax = -50 → Rate = -(- 50 / -500) = -10% (negative rate — flag but report)
+
+**Fallback hierarchy** (only if the primary formula produces 0% or cannot execute):
+
+1. **Primary**: `-(Income Tax Expense / Income Before Taxes)` — always try this first
+2. **Secondary**: `(Income Before Taxes - Net Income) / Income Before Taxes`
+3. **Last resort**: If Income Before Taxes = 0 (division by zero), or both tax and pre-tax are missing, use the **statutory corporate tax rate** for the company's domicile:
+   - US companies: **21%**
+   - Chinese companies (e.g., BIDU): **25%**
+   - European companies: varies, use **20%** as default
+   - If unsure, use **21%** as a global default
+   - Note in output: "Using statutory rate — division by zero"
+
+**The statutory rate is a LAST RESORT, not a default for loss quarters.** Loss quarters have real tax data that should be reported as-is.
 
 ### Step 5: Write Output to Markdown
 

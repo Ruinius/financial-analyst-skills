@@ -26,66 +26,55 @@ Each `SKILL.md` is essentially a **detailed recipe** for the AI. The more specif
 
 ## Pipeline Overview
 
-### Skill Decomposition
-
-| Skill | Pipeline Steps | Description |
-|-------|---------------|-------------|
-| **1. Document Classification** | Steps 2–6 | PDF → metadata extraction, ticker validation, file naming |
-| **2. Financial Data Extraction** | Steps 7–12 | 5 sub-skills: Balance Sheet, Income Statement, Shares, Growth, GAAP |
-| **3. Financial Calculations** | Steps 13–16 | Pure math: EBITA, Tax, Invested Capital, Summary |
-| **4. Document Organization** | Steps 17–20 | File moves, metadata, cross-document date healing |
-| **5. Financial Modeling** | Step 21 | DCF model (placeholder) |
-
-### Pipeline Flow
-
 Human step: Drop PDFs in `input_data/`
 
-**Skill 1: Document Classification**
+**Skill: Document Classification**
 - Move PDF from `input_data/` → `processing_data/`
 - Read PDF and extract: company TICKER, company name, document type, document_date, fiscal quarter, period_end_date
 - Validate ticker via Yahoo Finance (with reflection fallback, then human fallback)
 - Rename PDF to standard format: `TICKER_DOCTYPE_YYYYMMDD_temp.pdf`
 - Create initial markdown: `TICKER_DOCTYPE_YYYYMMDD_temp.md`
 
-**Skill 2: Financial Data Extraction**
-- Create/update `processing_data.md` with progress tracking table
-- Sub-skill 2a: Balance Sheet extraction → standardize with tiger-transformer + CSV mappings
-- Sub-skill 2b: Income Statement extraction → standardize + sign normalization
-- Sub-skill 2c: Shares Outstanding extraction
-- Sub-skill 2d: Organic Growth calculation + organic/currency-constant growth search
-- Sub-skill 2e: GAAP Reconciliation extraction
+**Skill: Financial Data Extraction** (for Earnings Announcement, 10K, 10Q, or equivalent financial reports)
+- Sub-skill: Balance Sheet extraction → standardize with tiger-transformer + CSV mappings
+- Sub-skill: Income Statement extraction → standardize + sign normalization
+- Sub-skill: Shares Outstanding extraction
+- Sub-skill: Organic Growth calculation + organic/currency-constant growth search
+- Sub-skill: GAAP Reconciliation extraction
 
-**Skill 3: Financial Calculations**
-- Sub-skill 3a: EBITA calculation
-- Sub-skill 3b: Tax rate calculation (simple + operating)
-- Sub-skill 3c: Invested Capital (NWC + long-term capital)
-- Sub-skill 3d: Summary table
+**Skill: Financial Calculations** (for Earnings Announcement, 10K, 10Q, or equivalent financial reports)
+- Sub-skill: EBITA calculation
+- Sub-skill: Tax rate calculation (simple + operating)
+- Sub-skill: Invested Capital (NWC + long-term capital)
+- Sub-skill: Summary table
 
-**Skill 4: Document Organization**
+**Skill: Document Organization**
 - Move processed files to `output_data/TICKER/`
 - Create/update `TICKER_metadata.md`
 - Cross-document date healing
 
-**Skill 5: Financial Modeling (Placeholder)**
-- DCF model using historical data + assumptions
+**Skill: Qualitative Assessment** (for Analyst Reports, Transcripts, and Long Form Articles)
+- Sub-skill: Determine whether the economic moat is Wide, Narrow, or None based on Morningstar-like rating and provide three bullets of rationale. Give a confidence level. Compare, harmonize, update content in `TICKER_metadata.md`
+- Sub-skill: Determine whether the EBITA margin will expand or shrink by 1 or 2 percentage points and provide three bullets of rationale. Give a confidence level. Compare, harmonize, update content in `TICKER_metadata.md`
+- Sub-skill: Determine whether the organic growth rate will increase or decrease by 1 or 2 percentage points and provide three bullets of rationale. Give a confidence level. Compare, harmonize, update content in `TICKER_metadata.md`
 
----
+**Skill: Financial Modeling**
+- Sub-skill: Calculate WACC using CAPM model to `TICKER_metadata.md`
+- Sub-skill: Create all the assumptions using a combination of historical and output from qualitative assessment to `TICKER_metadata.md`
+- Sub-skill: Populate the full DCF model to `TICKER_metadata.md`
+- Sub-skill: Populate the translation from DCF value to intrinsic value per share to `TICKER_metadata.md`
+- Sub-skill: Create and update `output_data/TICKER/TICKER_financial_model.json`
 
-## Build Order
-
-Each phase should be fully tested before moving to the next.
-
-| Phase | Skill | Complexity | Dependencies |
-|-------|-------|-----------|-------------|
-| **1** | Document Classification | Medium | Yahoo Finance, LLM |
-| **2a** | Balance Sheet Extraction | High | Tiger-Transformer, CSV mappings |
-| **2b** | Income Statement Extraction | High | Tiger-Transformer, CSV mappings |
-| **2c** | Shares Outstanding | Low | LLM only |
-| **2d** | Organic Growth | Medium | LLM only |
-| **2e** | GAAP Reconciliation | High | LLM only |
-| **3** | Financial Calculations | Low | Pure math, no external deps |
-| **4** | Document Organization | Low | File system only |
-| **5** | Financial Modeling | Medium | Pure math |
+**Frontend: Zero dependency interactive HTML** (one-time build)
+- Create a zero-dependency interactive HTML DCF viewer as a reusable template
+- Lives in `tools/financial_model_viewer.html`
+- Served via lightweight custom Python server `tools/serve.py` (static file serving + scenario save endpoint)
+- Reads data from `output_data/TICKER/TICKER_financial_model.json` via URL param (e.g., `?ticker=ADBE`)
+- Financial Modeling skill outputs the JSON; the viewer is static
+- **Interactive recalculation**: Editable assumption inputs (revenue growth, EBITA margin, WACC, terminal growth, tax rate) trigger instant DCF recalculation in vanilla JS
+- **Reset to defaults**: Button restores all assumptions to the AI-generated values from the JSON
+- **Scenario saving**: Save named snapshots of assumptions + calculated intrinsic value to `output_data/TICKER/TICKER_scenarios.json` via POST endpoint — git-trackable, portable, lives alongside the data
+- See `tiger-cafe/frontend/src/components/views/company/FinancialModel.jsx` for reference
 
 ---
 
@@ -103,7 +92,9 @@ Each phase should be fully tested before moving to the next.
 | Extraction Orchestrator | `app/services/extraction_orchestrator.py` |
 | Historical Calculations | `app/utils/historical_calculations.py` |
 | Timeline Service | `app/services/timeline_service.py` |
-| Financial Modeling | `app/utils/financial_modeling.py` |
+| Qualitative Assessment | `app/app_agents/qualitative_extractor.py` |
+| Financial Modeling (WACC/DCF) | `app/utils/financial_modeling.py` |
+| Financial Model UI (Frontend) | `frontend/src/components/views/company/FinancialModel.jsx` |
 | Summary Table UI | `frontend/src/components/views/document/DocumentExtractionView.jsx` |
 
 ---
@@ -115,20 +106,27 @@ Each phase should be fully tested before moving to the next.
 | Architecture | Full-stack web app (FastAPI + React + SQLite) | Flat file system + AI skills |
 | Storage | SQL database with ORM models | Markdown files + PDFs in folders |
 | Orchestration | Python code (`extraction_orchestrator.py`) | `SKILL.md` instructions for AI |
-| Progress Tracking | Database milestones + WebSocket events | `processing_data.md` table |
-| Transformer | In-process Python (PyTorch model) | Local FastAPI Server (`scripts/tiger_transformer_server.py`) |
+| Progress Tracking | Database milestones + WebSocket events | Markdown sections in `processing_data/` |
+| Transformer | In-process Python (PyTorch model) | Local FastAPI server (`tools/tiger_transformer_server.py`) |
+| Qualitative Assessment | Not implemented | AI skill reading analyst reports/transcripts |
+| Financial Model UI | React component (`FinancialModel.jsx`) | Zero-dependency HTML (`tools/financial_model_viewer.html`) |
+| Scenario Persistence | SQLite database | JSON files in `output_data/TICKER/` |
 
 ---
 
 ## Local Services
 
-To keep skills fast and modular, heavy computational tasks (like ML model inference) are handled by local background services.
+To keep skills fast and modular, heavy computational tasks and file serving are handled by local services.
 
-| Service | Script | Endpoint | Description |
-|---------|--------|----------|-------------|
-| **Tiger-Transformer** | `scripts/tiger_transformer_server.py` | `http://localhost:8000` | Loads the fine-tuned FINBERT model for line item standardization. |
+| Service | Script | Port | When to Run | Description |
+|---------|--------|------|-------------|-------------|
+| **Tiger-Transformer** | `tools/tiger_transformer_server.py` | `8000` | During document processing (Skills 1–3) | Loads the fine-tuned FINBERT model for line item standardization |
+| **Frontend Server** | `tools/serve.py` | `8080` | When reviewing/modeling results | Static file server + scenario save endpoint for the DCF viewer |
 
-To start all required services, run: `scripts/start_transformer.bat`
-| User Interface | React frontend | Human reads markdown output |
+**Starting services:**
+- Processing: `tools/start_transformer.bat`
+- Reviewing: `python tools/serve.py` → open `http://localhost:8080/tools/financial_model_viewer.html?ticker=ADBE`
+
+---
 
 The biggest mental shift: In tiger-cafe, you wrote **code** that does things. In tiger-skills, you write **instructions** that tell the AI how to do things. The AI _is_ the runtime.
