@@ -10,9 +10,10 @@ This runbook guides reasoning models through the end-to-end execution of the tig
 ## Prerequisites
 
 Before starting the pipeline, ensure:
+
 1. PDFs are present in the `input_data/` directory.
 2. If Tiger-Transformer is not running on localhost:8000 then ask the user to run `.\tools\start_transformer.bat`
-3. If a static file server is not running on localhost:8181 then ask the user to run `python -m http.server 8181 --bind 127.0.0.1`
+3. If a static file server is not running on localhost:8181 then ask the user to run `.\tools\start_file_server.bat`
 
 **DO NOT EVER start servers without human user.**
 
@@ -32,11 +33,13 @@ Phase 1 (Classify) ─────┤
 - **Qualitative documents** (analyst_report, transcript, press_release): Phases 1 → 5
 
 After all documents are processed, the **company-level skills** can run:
+
 - **Phase 6**: Financial Modeling (requires historical data from Phase 4 + qualitative assessments from Phase 5)
 
 ---
 
 ## Phase 1: Document Classification
+
 **Skill Reference:** `skills/document_classification/SKILL.md`
 
 Run this for EVERY document regardless of type.
@@ -57,41 +60,47 @@ Run this for EVERY document regardless of type.
 For documents classified as financial reports (earnings announcements, 10-Qs, 10-Ks).
 
 ### Phase 2: Financial Data Extraction
+
 **Skill Reference:** `skills/financial_data_extraction/SKILL.md`
 
 Extract specific components of the financial statements and append them to the markdown file created in Phase 1. Follow this sub-skill order:
-1. **Balance Sheet** (`balance_sheet/`) & **Income Statement** (`income_statement/`) — *These are independent and can be run first.*
-2. **Shares Outstanding** (`shares_outstanding/`) — *Can be run in parallel with the above.*
-3. **Organic Growth** (`organic_growth/`) — *DEPENDS ON: Income Statement.*
-4. **GAAP Reconciliation** (`gaap_reconciliation/`) — *Extracts non-GAAP adjustments.*
+
+1. **Balance Sheet** (`balance_sheet/`) & **Income Statement** (`income_statement/`) — _These are independent and can be run first._
+2. **Shares Outstanding** (`shares_outstanding/`) — _Can be run in parallel with the above._
+3. **Organic Growth** (`organic_growth/`) — _DEPENDS ON: Income Statement._
+4. **GAAP Reconciliation** (`gaap_reconciliation/`) — _Extracts non-GAAP adjustments._
 
 ### Phase 3: Financial Calculations
+
 **Skill Reference:** `skills/financial_calculations/SKILL.md`
 
 Compute derived financial metrics using purely arithmetic operations on the data extracted in Phase 2. Follow this order:
-1. **EBITA** (`ebita/`) & **Invested Capital** (`invested_capital/`) — *These are independent and can be run first.*
-2. **Tax Rates** (`tax/`) — *DEPENDS ON: EBITA.*
-3. **Summary Table** (`summary_table/`) — *DEPENDS ON: All prior calculations.*
+
+1. **EBITA** (`ebita/`) & **Invested Capital** (`invested_capital/`) — _These are independent and can be run first._
+2. **Tax Rates** (`tax/`) — _DEPENDS ON: EBITA._
+3. **Summary Table** (`summary_table/`) — _DEPENDS ON: All prior calculations._
 
 ### ⛔ Data Quality Gate (between Phase 3 and Phase 4)
 
 Before proceeding to Phase 4, verify the Summary Table output passes ALL of these checks:
 
-| # | Check | If Failed |
-|---|-------|-----------|
-| 1 | Revenue > 0 | ↩️ Re-run Phase 2 Income Statement — revenue line was not captured |
-| 2 | Tax Rate ≠ 0% | ↩️ Re-run Phase 2 IS (missing tax line) then Phase 3 Tax |
-| 3 | Invested Capital ≠ 0 and is reasonable | ↩️ Re-run Phase 2 Balance Sheet — incomplete extraction |
-| 4 | ROIC between -50% and 200% | ↩️ Check IC and NOPAT — likely incomplete BS |
-| 5 | Growth ≠ N/A | ↩️ Re-run Phase 2 Organic Growth — prior year revenue not extracted |
-| 6 | Growth ≠ 0.0% | ⚠️ Double-check — statistically implausible |
+| #   | Check                                  | If Failed                                                           |
+| --- | -------------------------------------- | ------------------------------------------------------------------- |
+| 1   | Revenue > 0                            | ↩️ Re-run Phase 2 Income Statement — revenue line was not captured  |
+| 2   | Tax Rate ≠ 0%                          | ↩️ Re-run Phase 2 IS (missing tax line) then Phase 3 Tax            |
+| 3   | Invested Capital ≠ 0 and is reasonable | ↩️ Re-run Phase 2 Balance Sheet — incomplete extraction             |
+| 4   | ROIC between -50% and 200%             | ↩️ Check IC and NOPAT — likely incomplete BS                        |
+| 5   | Growth ≠ N/A                           | ↩️ Re-run Phase 2 Organic Growth — prior year revenue not extracted |
+| 6   | Growth ≠ 0.0%                          | ⚠️ Double-check — statistically implausible                         |
 
 **Do NOT proceed to Phase 4 with failing checks.** Re-run the failing upstream skill, then re-run Phase 3 Summary Table.
 
 ### Phase 4: Document Organization
+
 **Skill Reference:** `skills/document_organization/SKILL.md`
 
 Finalize the document and integrate it into the long-term storage.
+
 1. Harmonize units across all extracted statements in the markdown document.
 2. Initialize or update the master `output_data/TICKER/TICKER_metadata.md` file with the newly calculated history.
 3. Perform cross-document date healing if inconsistencies are found with historical data.

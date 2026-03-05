@@ -73,6 +73,7 @@ financial-analyst-skills/
 │   ├── financial_model_viewer.html   # Interactive DCF viewer (zero-dependency)
 │   ├── simple_frontend_server.py     # Static file server + scenario save endpoint
 │   ├── start_transformer.bat         # Launch transformer server
+│   ├── start_file_server.bat         # Launch file server for PDF reading
 │   └── start_frontend.bat            # Launch frontend viewer server
 ├── docs/                   # Project documentation and roadmap
 ├── data/                   # Static data and configurations
@@ -123,7 +124,7 @@ financial-analyst-skills/
    B. **Browser agent file server** (Port 8181) — required for PDF reading:
 
    ```bash
-   python -m http.server 8181 --bind 127.0.0.1
+   .\tools\start_file_server.bat
    ```
 
    C. **Frontend viewer** (Port 3000) — for interactive DCF model:

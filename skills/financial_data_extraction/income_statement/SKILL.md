@@ -9,7 +9,7 @@ description: Extract income statement line items from a financial PDF, standardi
 
 - Classification metadata available in `processing_data/TICKER_DOCTYPE_DATE_temp.md`
 - If Tiger-Transformer is not running on localhost:8000 then ask the user to run `.\tools\start_transformer.bat`
-- If a static file server is not running on localhost:8181 then ask the user to run `python -m http.server 8181 --bind 127.0.0.1`
+- If a static file server is not running on localhost:8181 then ask the user to run `.\tools\start_file_server.bat`
 
 **DO NOT EVER start servers without human user.**
 
@@ -39,19 +39,20 @@ description: Extract income statement line items from a financial PDF, standardi
 Extract **every** line item from revenue through net income for the **current period column**. The extraction must be **complete** — do not skip or abbreviate any rows.
 
 **Output JSON structure:**
+
 ```json
 {
-    "currency": "JPY",
-    "unit": "millions",
-    "time_period": "Q1 2025",
-    "period_end_date": "2025-02-28",
-    "line_items": [
-        {
-            "line_name": "Total revenue",
-            "line_value": 5714,
-            "line_category": "income_statement"
-        }
-    ]
+  "currency": "JPY",
+  "unit": "millions",
+  "time_period": "Q1 2025",
+  "period_end_date": "2025-02-28",
+  "line_items": [
+    {
+      "line_name": "Total revenue",
+      "line_value": 5714,
+      "line_category": "income_statement"
+    }
+  ]
 }
 ```
 
@@ -59,17 +60,18 @@ Extract **every** line item from revenue through net income for the **current pe
 >
 > After extraction, verify that ALL of the following critical line items are present:
 >
-> | # | Required Line Item | Typical Standardized Name |
-> |---|---|---|
-> | 1 | Revenue / Total Revenue | `revenue` or `total_revenue` |
-> | 2 | Operating Income / Operating Profit | `operating_income` |
-> | 3 | Income Before Income Taxes | `income_before_taxes` |
-> | 4 | Income Tax Expense / Benefit | `income_tax_provision` |
-> | 5 | Net Income | `net_income` |
+> | #   | Required Line Item                  | Typical Standardized Name    |
+> | --- | ----------------------------------- | ---------------------------- |
+> | 1   | Revenue / Total Revenue             | `revenue` or `total_revenue` |
+> | 2   | Operating Income / Operating Profit | `operating_income`           |
+> | 3   | Income Before Income Taxes          | `income_before_taxes`        |
+> | 4   | Income Tax Expense / Benefit        | `income_tax_provision`       |
+> | 5   | Net Income                          | `net_income`                 |
 >
 > If **any** of these 5 are missing, go back to the PDF and re-read the income statement more carefully. These lines are required for downstream calculations (EBITA, Tax Rate, NOPAT). Do NOT proceed with an incomplete extraction.
 
 **Extraction rules:**
+
 - Extract values EXACTLY as shown — do NOT round, estimate, or calculate
 - `line_name`: Shorten names, remove "net of..." notes
 - `line_value`: Numeric only. Use negative values where shown in the document
@@ -82,6 +84,7 @@ Extract **every** line item from revenue through net income for the **current pe
 - Maintain exact document order
 
 **Anti-hallucination rules:**
+
 - ONLY extract values explicitly shown in the document
 - Do NOT invent line items or values
 - If a value is not visible, use null or omit
@@ -96,6 +99,7 @@ Send **ALL line items together in a single batch request** to the Tiger-Transfor
 **Avoid Shell Escaping Issues:** Do NOT try to send the large JSON payload via `curl` or `Invoke-RestMethod` inline on the command line. Write a temporary Python script (`tmp/run_is_transformer.py`) using the `write_to_file` tool to send the HTTP request, then execute that script.
 
 **Example Temporary Python Script:**
+
 ```python
 import urllib.request
 import json
@@ -110,9 +114,9 @@ payload = {
     ]
 }
 
-req = urllib.request.Request('http://localhost:8000/predict/income-statement', 
-                             method='POST', 
-                             headers={'Content-Type': 'application/json'}, 
+req = urllib.request.Request('http://localhost:8000/predict/income-statement',
+                             method='POST',
+                             headers={'Content-Type': 'application/json'},
                              data=json.dumps(payload).encode('utf-8'))
 
 try:
@@ -123,6 +127,7 @@ except Exception as e:
 ```
 
 **Response:** Each item gets:
+
 - `standardized_name`: Standardized key (e.g., `total_revenue`)
 - `is_calculated`: Whether this is a subtotal/total (from CSV mapping)
 - `is_operating`: Whether this is an operating item (from CSV mapping)
@@ -132,6 +137,7 @@ except Exception as e:
 ### Step 5: Normalize Signs
 
 Using the `is_expense` flag from the transformer:
+
 - If `is_expense` is `true` AND `line_value` is positive → flip to negative
 - If `is_expense` is `true` AND `line_value` is already negative → keep as-is
 - Revenue and income items should remain positive
@@ -161,20 +167,20 @@ Append the following section to the document's `.md` file:
 
 ## Income Statement
 
-| Field | Value |
-|-------|-------|
-| Currency | {currency} |
-| Unit | {unit} |
-| Extraction Date | {current_date_iso} |
-| Validation | {PASS or FAIL with error count} |
+| Field           | Value                           |
+| --------------- | ------------------------------- |
+| Currency        | {currency}                      |
+| Unit            | {unit}                          |
+| Extraction Date | {current_date_iso}              |
+| Validation      | {PASS or FAIL with error count} |
 
 ### Line Items
 
-| # | Line Name | Value | Standardized Name | Calculated | Operating | Expense |
-|---|-----------|-------|-------------------|------------|-----------|---------|
-| 1 | Total revenue | 5,714 | total_revenue | Yes | Yes | No |
-| 2 | Subscription cost of revenue | -490 | cost_of_revenue_subscription | No | Yes | Yes |
-| ... | ... | ... | ... | ... | ... | ... |
+| #   | Line Name                    | Value | Standardized Name            | Calculated | Operating | Expense |
+| --- | ---------------------------- | ----- | ---------------------------- | ---------- | --------- | ------- |
+| 1   | Total revenue                | 5,714 | total_revenue                | Yes        | Yes       | No      |
+| 2   | Subscription cost of revenue | -490  | cost_of_revenue_subscription | No         | Yes       | Yes     |
+| ... | ...                          | ...   | ...                          | ...        | ...       | ...     |
 ```
 
 ---
@@ -188,3 +194,80 @@ Append the following section to the document's `.md` file:
 ## Reference
 
 Based on `tiger-cafe\app\app_agents\income_statement_extractor.py`
+
+---
+
+## Example Curation
+
+> **Examples folder for THIS skill:** `skills/financial_data_extraction/income_statement/examples/`
+> (Relative to this SKILL.md: `./examples/`)
+
+After completing this skill, you MUST perform the following example curation step:
+
+### 1. Save the Current Run as a New Example
+
+- Copy the **output produced by this skill run** into the examples folder as a new `.md` file.
+- Naming convention: `TICKER_example.md` (e.g., `AAPL_example.md`, `MSFT_example.md`).
+- The example file should contain:
+  - The **complete output** this skill produced (all tables, sections, and values)
+  - A brief header noting the source (ticker, document date, period)
+  - The **calculation walkthrough** if this is a calculation skill — show intermediate values so a reader can follow the logic
+
+### 2. Review All Examples
+
+- List every `.md` file in `skills/financial_data_extraction/income_statement/examples/`
+- Read each example file and evaluate it on these criteria:
+  | Criterion | What to look for |
+  |-----------|-----------------|
+  | **Completeness** | Does it show ALL output fields this skill produces? |
+  | **Correctness** | Are the values accurate and internally consistent? |
+  | **Edge coverage** | Does it demonstrate interesting edge cases or fallback logic? |
+  | **Clarity** | Is it well-formatted and easy to follow as a reference? |
+
+### 3. Keep Only the Best Example
+
+- Compare all example files (including the one you just created) and **select the single best one** — the one that is most complete, correct, and instructive.
+- **Delete all other example files** from `skills/financial_data_extraction/income_statement/examples/`.
+- The surviving example should serve as the **gold-standard reference** for anyone reading this skill.
+
+> ⚠️ **Rules for example curation:**
+>
+> - There must be **exactly 1 example file** in the folder after curation
+> - NEVER keep a partial or broken example over a complete one
+> - If the new run's output is worse than the existing example, keep the old one and delete the new one
+> - If no existing example has all required fields, the new run's output wins by default
+> - The surviving file must be renamed to `TICKER_example.md` format if not already
+
+---
+
+## Self-Improvement
+
+After completing this skill, you MUST perform the following self-improvement step:
+
+1. **Reflect on the run.** Review what happened during this execution:
+   - Did any step fail or require retry?
+   - Were there ambiguities in the instructions that caused hesitation or errors?
+   - Did you discover an edge case not covered by the current instructions?
+   - Was any output wrong, incomplete, or required manual correction?
+
+2. **Propose and apply improvements.** If you identified any issue, update THIS `SKILL.md` file directly. Improvements can include:
+   - Adding new edge case handling or fallback logic
+   - Clarifying ambiguous wording in existing steps
+   - Adding validation checks that would have caught an error earlier
+   - Updating examples to cover newly discovered patterns
+   - Removing or correcting outdated instructions
+
+3. **Log the change.** Append a brief entry to the changelog below so the improvement history is tracked.
+
+> ⚠️ **Rules for self-edits:**
+>
+> - NEVER delete or weaken existing validation rules — only add or strengthen them
+> - Keep changes surgical and focused — do not rewrite sections that are working fine
+> - If unsure whether a change is correct, add it as a `> ⚠️ NOTE:` rather than modifying instructions
+> - Each changelog entry must include the date and a one-line description
+
+### Changelog
+
+| Date | Change           |
+| ---- | ---------------- |
+| —    | (no changes yet) |
