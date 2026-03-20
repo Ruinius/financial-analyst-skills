@@ -61,24 +61,28 @@ For documents classified as financial reports (earnings announcements, 10-Qs, 10
 
 ### Phase 2: Financial Data Extraction
 
-**Skill Reference:** `skills/financial_data_extraction/SKILL.md`
+Extract specific components of the financial statements and append them to the markdown file created in Phase 1. 
 
-Extract specific components of the financial statements and append them to the markdown file created in Phase 1. Follow this sub-skill order:
+> **⚡ OPTIMIZATION — Single-Pass PDF Read**
+> Do NOT open the PDF multiple times. To save token/time overhead:
+> 1. Open the PDF in the browser ONCE.
+> 2. Scroll through the document and extract all raw unformatted data for Balance Sheet, Income Statement (including Shares Outstanding), Organic Growth, and GAAP Reconciliation into your scratchpad or a temporary JSON.
+> 3. Close the browser.
+> 4. Run the sub-skills below *offline* using the raw data you've gathered to format and standardize the output.
 
-1. **Balance Sheet** (`balance_sheet/`) & **Income Statement** (`income_statement/`) — _These are independent and can be run first._
-2. **Shares Outstanding** (`shares_outstanding/`) — _Can be run in parallel with the above._
-3. **Organic Growth** (`organic_growth/`) — _DEPENDS ON: Income Statement._
-4. **GAAP Reconciliation** (`gaap_reconciliation/`) — _Extracts non-GAAP adjustments._
+Follow this sub-skill order:
+
+1. **Balance Sheet** (`skills/financial_data_extraction/balance_sheet/SKILL.md`) & **Income Statement** (`skills/financial_data_extraction/income_statement/SKILL.md`) — *These are independent and can be run first. Ensure you extract Shares Outstanding info during the Income Statement step.*
+2. **Organic Growth** (`skills/financial_data_extraction/organic_growth/SKILL.md`) — *DEPENDS ON: Income Statement.*
+3. **GAAP Reconciliation** (`skills/financial_data_extraction/gaap_reconciliation/SKILL.md`) — *Conditional: ONLY run if `document_type` == `earnings_announcement`. Skip entirely otherwise.*
 
 ### Phase 3: Financial Calculations
 
-**Skill Reference:** `skills/financial_calculations/SKILL.md`
+Execute the deterministic Python wrapper scripts sequentially to compute derived financial metrics from the Phase 2 data:
 
-Compute derived financial metrics using purely arithmetic operations on the data extracted in Phase 2. Follow this order:
-
-1. **EBITA** (`ebita/`) & **Invested Capital** (`invested_capital/`) — _These are independent and can be run first._
-2. **Tax Rates** (`tax/`) — _DEPENDS ON: EBITA._
-3. **Summary Table** (`summary_table/`) — _DEPENDS ON: All prior calculations._
+1. **EBITA** (`skills/financial_calculations/ebita/SKILL.md`) & **Invested Capital** (`skills/financial_calculations/invested_capital/SKILL.md`) — *These are independent and can run first.*
+2. **Tax Rates** (`skills/financial_calculations/tax/SKILL.md`) — *DEPENDS ON: EBITA.*
+3. **Summary Table** (`skills/financial_calculations/summary_table/SKILL.md`) — *DEPENDS ON: All prior calculations.*
 
 ### ⛔ Data Quality Gate (between Phase 3 and Phase 4)
 
@@ -126,15 +130,13 @@ For documents classified as analyst reports, transcripts, or press releases. The
 
 ## Phase 6: Financial Modeling
 
-**Skill Reference:** `skills/financial_modeling/SKILL.md`
+This is a **company-level** sequence of deterministic Python wrapper scripts. It runs once per ticker after sufficient historical data and qualitative assessments are available. Execute in order:
 
-This is a **company-level** skill, not a per-document skill. It runs once per ticker after sufficient historical data and qualitative assessments are available.
-
-1. **Calculate WACC** using CAPM model → write to `TICKER_metadata.md`.
-2. **Create assumptions** using a combination of historical trends and qualitative assessment output → write to `TICKER_metadata.md`.
-3. **Populate the full DCF model** (10-year projection + terminal value) → write to `TICKER_metadata.md`.
-4. **Calculate intrinsic value per share** → write to `TICKER_metadata.md`.
-5. **Create/update `output_data/TICKER/TICKER_financial_model.json`** with all inputs, assumptions, and computed values for the interactive frontend viewer.
+1. **Calculate WACC** (`skills/financial_modeling/wacc/SKILL.md`) using CAPM model → write to `TICKER_metadata.md`.
+2. **Create assumptions** (`skills/financial_modeling/assumptions/SKILL.md`) using historical trends and qualitative output → write to `TICKER_metadata.md`.
+3. **Populate the full DCF model** (`skills/financial_modeling/dcf/SKILL.md`) → write to `TICKER_metadata.md`.
+4. **Calculate intrinsic value per share** (`skills/financial_modeling/intrinsic_value/SKILL.md`) → write to `TICKER_metadata.md`.
+5. **Create/update JSON export** (`skills/financial_modeling/json_export/SKILL.md`) with all inputs and computed values for the interactive frontend viewer.
 
 ---
 
@@ -158,3 +160,17 @@ AFTER all documents processed:
   FOR EACH ticker with sufficient data:
     Execute Phase 6 (Financial Modeling)
 ```
+
+
+---
+
+## 🏁 Post-Pipeline Epilogue (Example Curation & Self-Improvement)
+
+To save tokens and time during execution, do not curate examples or run self-improvement after every individual skill. Instead, run them here at the end of the full pipeline for ALL skills you executed during this run.
+
+For each skill executed during this pipeline run:
+1. Locate its output and save it as a new `TICKER_example.md` in that skill's `examples/` directory.
+2. Review all examples in that `examples/` directory and keep only the single best one (delete the rest).
+3. If you found any edge cases or ambiguities during the skill's execution, propose improvements and log them in that skill's `SKILL.md` file.
+
+(See `skills/SHARED_POSTRUN.md` for the exact rules of example curation and self-improvement.)

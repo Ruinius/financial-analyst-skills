@@ -33,12 +33,11 @@ All 21 skills are registered in [`skills/skills_metadata.json`](skills/skills_me
 |     |                                                                                |                                                                                      |
 | 2   | [**Financial Data Extraction**](skills/financial_data_extraction/)             | Extract structured financial data from classified PDFs                               |
 | 2a  | ↳ [Balance Sheet](skills/financial_data_extraction/balance_sheet/)             | Extract balance sheet line items, standardize via Tiger-Transformer                  |
-| 2b  | ↳ [Income Statement](skills/financial_data_extraction/income_statement/)       | Extract income statement line items, normalize expense signs                         |
-| 2c  | ↳ [Shares Outstanding](skills/financial_data_extraction/shares_outstanding/)   | Extract basic and diluted share counts                                               |
-| 2d  | ↳ [Organic Growth](skills/financial_data_extraction/organic_growth/)           | Extract organic/constant-currency growth rates                                       |
-| 2e  | ↳ [GAAP Reconciliation](skills/financial_data_extraction/gaap_reconciliation/) | Extract GAAP-to-non-GAAP operating income reconciliation                             |
+| 2b  | ↳ [Income Statement](skills/financial_data_extraction/income_statement/)       | Extract income statement line items and share counts, normalize expense signs        |
+| 2c  | ↳ [Organic Growth](skills/financial_data_extraction/organic_growth/)           | Extract organic/constant-currency growth rates                                       |
+| 2d  | ↳ [GAAP Reconciliation](skills/financial_data_extraction/gaap_reconciliation/) | Extract GAAP-to-non-GAAP operating income reconciliation                             |
 |     |                                                                                |                                                                                      |
-| 3   | [**Financial Calculations**](skills/financial_calculations/)                   | Compute derived metrics from extracted data (pure math, no LLM)                      |
+| 3   | [**Financial Calculations**](skills/financial_calculations/)                   | Compute derived metrics via deterministic Python scripts                             |
 | 3a  | ↳ [EBITA](skills/financial_calculations/ebita/)                                | Earnings Before Interest, Tax, and Amortization                                      |
 | 3b  | ↳ [Tax Rate](skills/financial_calculations/tax/)                               | Effective and adjusted (operating) tax rates                                         |
 | 3c  | ↳ [Invested Capital](skills/financial_calculations/invested_capital/)          | NWC + net long-term operating assets                                                 |
@@ -67,6 +66,7 @@ financial-analyst-skills/
 │   ├── qualitative_assessment/
 │   └── financial_modeling/
 ├── tools/                  # Shared tools and utilities
+│   ├── markdown_parser.py            # Utility for parsing markdown outputs
 │   ├── model/                        # (gitignored) Tiger-transformer model files
 │   ├── market_data.py                # Yahoo Finance lookups (validate, profile, fx)
 │   ├── tiger_transformer_server.py   # Local transformer model server
@@ -101,9 +101,9 @@ financial-analyst-skills/
    ```bash
    git clone https://github.com/Ruinius/financial-analyst-skills.git
    cd financial-analyst-skills
-   python -m venv venv
-   source venv/bin/activate        # Linux/Mac
-   venv\Scripts\activate           # Windows
+   python -m venv .venv
+   source .venv/bin/activate       # Linux/Mac
+   .venv\Scripts\activate          # Windows
    pip install -r requirements.txt
    ```
 

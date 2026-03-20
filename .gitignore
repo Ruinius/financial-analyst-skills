@@ -1,7 +1,7 @@
 input_data/
 processing_data/
 output_data/
-venv/
+.venv/
 .vscode/
 tmp/
 tools/model
