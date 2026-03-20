@@ -78,11 +78,9 @@ Follow this sub-skill order:
 
 ### Phase 3: Financial Calculations
 
-Execute the deterministic Python wrapper scripts sequentially to compute derived financial metrics from the Phase 2 data:
+Execute the deterministic Python wrapper script to compute derived financial metrics from the Phase 2 data:
 
-1. **EBITA** (`skills/financial_calculations/ebita/SKILL.md`) & **Invested Capital** (`skills/financial_calculations/invested_capital/SKILL.md`) — *These are independent and can run first.*
-2. **Tax Rates** (`skills/financial_calculations/tax/SKILL.md`) — *DEPENDS ON: EBITA.*
-3. **Summary Table** (`skills/financial_calculations/summary_table/SKILL.md`) — *DEPENDS ON: All prior calculations.*
+**Skill Reference:** `skills/financial_calculations/SKILL.md`
 
 ### ⛔ Data Quality Gate (between Phase 3 and Phase 4)
 

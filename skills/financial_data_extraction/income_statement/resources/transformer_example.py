@@ -18,6 +18,9 @@ req = urllib.request.Request('http://localhost:8000/predict/income-statement',
 
 try:
     response = urllib.request.urlopen(req)
-    print(response.read().decode('utf-8'))
+    predictions = json.loads(response.read().decode('utf-8'))
+    # The server returns a JSON array (list) directly: [{"standardized_name": "...", "confidence": 0.99}, ...]
+    for i, item in enumerate(predictions):
+        print(f"Row {i}: mapped to {item['standardized_name']} (calculated={item.get('is_calculated')})")
 except Exception as e:
     print(f"Error: {e}", file=sys.stderr)

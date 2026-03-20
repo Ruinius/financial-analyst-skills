@@ -35,6 +35,9 @@ description: Extract income statement line items from a financial PDF, standardi
 
 Extract **every** line item from revenue through net income for the **current period column**. The extraction must be **complete** — do not skip or abbreviate any rows.
 
+> ⚠️ **IMPORTANT: Prior-Year Revenue**
+> While you are extracting the current period's line items, you MUST also look at the comparative column and extract the **prior-year revenue**. This single value is required later for the Organic Growth skill. You do not need the full prior-year column, just the top-line revenue.
+
 **Output JSON structure:**
 
 ```json
@@ -43,6 +46,7 @@ Extract **every** line item from revenue through net income for the **current pe
   "unit": "millions",
   "time_period": "Q1 2025",
   "period_end_date": "2025-02-28",
+  "prior_year_revenue": 5000,
   "line_items": [
     {
       "line_name": "Total revenue",
