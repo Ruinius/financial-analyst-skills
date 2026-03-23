@@ -5,6 +5,13 @@ import argparse
 import os
 from datetime import datetime
 
+def section_exists(content, header):
+    """Check if a section header already exists in the markdown content."""
+    if header in content:
+        print(f"SKIP: '{header}' already exists in output file. Remove it manually to re-extract.")
+        return True
+    return False
+
 def req_transformer(path, items):
     if not items:
         return []
@@ -31,8 +38,14 @@ def main():
     out_md = []
     today = datetime.now().strftime('%Y-%m-%d')
 
+    # Idempotency: read existing content to avoid duplicate sections
+    existing_content = ""
+    if os.path.exists(args.md):
+        with open(args.md, 'r', encoding='utf-8') as f:
+            existing_content = f.read()
+
     # Balance Sheet
-    if "balance_sheet" in data:
+    if "balance_sheet" in data and not section_exists(existing_content, "## Balance Sheet"):
         bs = data["balance_sheet"]
         res = req_transformer('balance-sheet', bs["line_items"])
         out_md.append("---")
@@ -55,7 +68,7 @@ def main():
             out_md.append(f"| {i+1} | {orig['line_name']} | {val} | {orig['line_category']} | {trans['standardized_name']} | {calc} | {op} |")
             
     # Income Statement
-    if "income_statement" in data:
+    if "income_statement" in data and not section_exists(existing_content, "## Income Statement"):
         is_data = data["income_statement"]
         res = req_transformer('income-statement', is_data["line_items"])
         out_md.append("\n---")
@@ -89,7 +102,7 @@ def main():
         out_md.append(f"| Extraction Date | {today} |")
 
     # Organic Growth
-    if "organic_growth" in data:
+    if "organic_growth" in data and not section_exists(existing_content, "## Organic Growth"):
         og = data["organic_growth"]
         curr_rev = og.get('current_revenue', 0)
         prior_rev = og.get('prior_revenue', 0)
@@ -112,7 +125,7 @@ def main():
         out_md.append(f"| Extraction Date | {today} |")
 
     # GAAP Reconciliation
-    if "gaap_reconciliation" in data:
+    if "gaap_reconciliation" in data and not section_exists(existing_content, "## GAAP Reconciliation"):
         gaap = data["gaap_reconciliation"]
         out_md.append("\n---")
         out_md.append("## GAAP Reconciliation")
@@ -129,9 +142,12 @@ def main():
             out_md.append(f"| {i+1} | {item['line_name']} | {item['line_value']} | {item['line_category']} | {item.get('is_operating', '—')} |")
 
     # Append
+    if not out_md:
+        print("Nothing new to append — all sections already exist in the output file.")
+        return
     with open(args.md, "a", encoding="utf-8") as f:
         f.write("\n" + "\n".join(out_md) + "\n")
-    print(f"Appended extracted data strictly to {args.md}")
+    print(f"Appended extracted data to {args.md}")
 
 if __name__ == '__main__':
     main()

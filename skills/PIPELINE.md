@@ -61,20 +61,11 @@ For documents classified as financial reports (earnings announcements, 10-Qs, 10
 
 ### Phase 2: Financial Data Extraction
 
-Extract specific components of the financial statements and append them to the markdown file created in Phase 1. 
+**Skill Reference:** `skills/financial_data_extraction/SKILL.md`
 
-> **⚡ OPTIMIZATION — Single-Pass PDF Read**
-> Do NOT open the PDF multiple times. To save token/time overhead:
-> 1. Open the PDF in the browser ONCE.
-> 2. Scroll through the document and extract all raw unformatted data for Balance Sheet, Income Statement (including Shares Outstanding), Organic Growth, and GAAP Reconciliation into your scratchpad or a temporary JSON.
-> 3. Close the browser.
-> 4. Run the sub-skills below *offline* using the raw data you've gathered to format and standardize the output.
+Extract all financial statement components (Balance Sheet, Income Statement, Shares Outstanding, Organic Growth, and GAAP Reconciliation) and append them to the markdown file created in Phase 1.
 
-Follow this sub-skill order:
-
-1. **Balance Sheet** (`skills/financial_data_extraction/balance_sheet/SKILL.md`) & **Income Statement** (`skills/financial_data_extraction/income_statement/SKILL.md`) — *These are independent and can be run first. Ensure you extract Shares Outstanding info during the Income Statement step.*
-2. **Organic Growth** (`skills/financial_data_extraction/organic_growth/SKILL.md`) — *DEPENDS ON: Income Statement.*
-3. **GAAP Reconciliation** (`skills/financial_data_extraction/gaap_reconciliation/SKILL.md`) — *Conditional: ONLY run if `document_type` == `earnings_announcement`. Skip entirely otherwise.*
+The consolidated skill handles the full extraction workflow: single-pass PDF reading, raw data extraction, transformer standardization, and markdown output via the `transform_and_append.py` script.
 
 ### Phase 3: Financial Calculations
 
@@ -128,13 +119,12 @@ For documents classified as analyst reports, transcripts, or press releases. The
 
 ## Phase 6: Financial Modeling
 
-This is a **company-level** sequence of deterministic Python wrapper scripts. It runs once per ticker after sufficient historical data and qualitative assessments are available. Execute in order:
+**Skill Reference:** `skills/financial_modeling/SKILL.md`
 
-1. **Calculate WACC** (`skills/financial_modeling/wacc/SKILL.md`) using CAPM model → write to `TICKER_metadata.md`.
-2. **Create assumptions** (`skills/financial_modeling/assumptions/SKILL.md`) using historical trends and qualitative output → write to `TICKER_metadata.md`.
-3. **Populate the full DCF model** (`skills/financial_modeling/dcf/SKILL.md`) → write to `TICKER_metadata.md`.
-4. **Calculate intrinsic value per share** (`skills/financial_modeling/intrinsic_value/SKILL.md`) → write to `TICKER_metadata.md`.
-5. **Create/update JSON export** (`skills/financial_modeling/json_export/SKILL.md`) with all inputs and computed values for the interactive frontend viewer.
+This is a **company-level** deterministic Python script. It runs once per ticker after sufficient historical data and qualitative assessments are available. The script executes the complete sequence in a single pass: WACC → Assumptions → DCF → Intrinsic Value → JSON Export.
+
+1. Execute the script: `python skills/financial_modeling/scripts/calculate.py {TICKER} output_data/{TICKER}/{TICKER}_metadata.md`
+2. Verify it threw no errors.
 
 ---
 

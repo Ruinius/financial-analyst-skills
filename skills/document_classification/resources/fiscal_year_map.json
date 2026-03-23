@@ -1,0 +1,51 @@
+{
+    "_description": "Maps tickers to their non-standard fiscal year end months. Companies NOT listed here use a standard calendar fiscal year (Dec 31). The agent should use this to correctly assign time_period and period_end_date.",
+    "_usage": "If a company's fiscal year ends in a month other than December, quarterly boundaries shift accordingly. For example, LULU's FY ends late January, so Q4 covers Nov-Jan, Q3 covers Aug-Oct, etc.",
+    "fiscal_year_ends": {
+        "LULU": {
+            "month": 1,
+            "note": "Fiscal year ends late January (retail 52/53-week year). Q4 = Nov-Jan."
+        },
+        "BABA": {
+            "month": 3,
+            "note": "Fiscal year ends March 31. Q3 = Oct-Dec, Q4 = Jan-Mar."
+        },
+        "WMT": {
+            "month": 1,
+            "note": "Fiscal year ends late January (retail 52/53-week year). Q4 = Nov-Jan."
+        },
+        "TGT": {
+            "month": 1,
+            "note": "Fiscal year ends late January (retail 52/53-week year). Q4 = Nov-Jan."
+        },
+        "COST": {
+            "month": 8,
+            "note": "Fiscal year ends late August (retail 52/53-week year). Q4 = Jun-Aug."
+        },
+        "NKE": {
+            "month": 5,
+            "note": "Fiscal year ends late May. Q4 = Mar-May."
+        },
+        "ORCL": {
+            "month": 5,
+            "note": "Fiscal year ends May 31. Q4 = Mar-May."
+        },
+        "ACN": {
+            "month": 8,
+            "note": "Fiscal year ends August 31. Q4 = Jun-Aug."
+        },
+        "FDX": {
+            "month": 5,
+            "note": "Fiscal year ends May 31. Q4 = Mar-May."
+        },
+        "ADBE": {
+            "month": 11,
+            "note": "Fiscal year ends late November. Q4 = Sep-Nov."
+        }
+    },
+    "quarter_mapping_guide": {
+        "description": "For companies with non-standard fiscal years, map the period_end_date month to the correct fiscal quarter using the fiscal year end month.",
+        "formula": "quarter = ((period_end_month - fiscal_year_end_month - 1) % 12) // 3 + 1",
+        "example": "BABA FY ends March. Period ending Dec 31 → Q3. Period ending Mar 31 → Q4 (which is also FY end)."
+    }
+}

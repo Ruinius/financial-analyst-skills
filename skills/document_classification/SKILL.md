@@ -28,11 +28,14 @@ This skill takes a PDF from `input_data/`, classifies it, abstracts metadata, an
 
 ## Step-by-Step Instructions
 
-### Step 1: Pick a PDF to Process
+> **Batch Mode:** Repeat Steps 1–6 for EVERY `.pdf` file in `input_data/`. Track which files have been processed and continue until all are done. Report a summary at the end.
+
+### Step 1: Pick the Next PDF to Process
 
 1. List all `.pdf` files in `input_data/`
-2. If no PDFs exist, stop and inform the user: "No PDFs found in input_data/"
-3. Pick the first unprocessed PDF in `input_data/`. Keep track of its filename.
+2. If no PDFs exist (or all have already been processed), stop and inform the user: "No PDFs found in input_data/" or "All PDFs processed."
+3. Pick the next unprocessed PDF in `input_data/`. Keep track of its filename.
+4. Continue to Step 2 for this PDF.
 
 ### Step 2: Read the PDF
 
@@ -65,7 +68,12 @@ From the PDF content read in Step 2, extract the following fields. Refer to `ski
 
 ### Step 4: Extract Dates
 
-Extract each date field carefully, paying close attention to the document context:
+Extract each date field carefully, paying close attention to the document context.
+
+**Fiscal Year Awareness:** Before assigning `time_period`, check `skills/document_classification/resources/fiscal_year_map.json` to see if this company has a non-standard fiscal year. Many retail and tech companies (e.g., LULU, WMT, COST, NKE, BABA) have fiscal years ending in months other than December. This shifts which calendar months map to which fiscal quarters.
+
+- If the ticker IS in the map, use the `fiscal_year_ends` entry to determine the correct fiscal quarter from the `period_end_date`.
+- If the ticker is NOT in the map, assume a standard calendar fiscal year (ending December 31).
 
 #### 4a: Extract `document_date`
 - The date the document was published or released
@@ -74,6 +82,7 @@ Extract each date field carefully, paying close attention to the document contex
 #### 4b: Extract `time_period`
 - The fiscal reporting period
 - Format: `Q1 YYYY`, `Q2 YYYY`, `Q3 YYYY`, `Q4 YYYY`, or `FY YYYY`
+- **Important:** Use the company's fiscal calendar, not the calendar year. For example, LULU's fiscal year ends in January, so a period ending Jan 28, 2024 is Q4 FY2023, not Q1 2024.
 
 #### 4c: Extract `period_end_date`
 - The date the financial period ended (quarter end or fiscal year end)
@@ -89,7 +98,7 @@ Execute the following terminal command with the correctly formatted strings from
 venv\Scripts\activate ; python skills\document_classification\scripts\process_classification.py --filename "FILENAME.pdf" --company_name "Extracted Company Name" --ticker "TICKER" --document_type "document_type" --document_date "YYYY-MM-DD" --time_period "time_period" --period_end_date "YYYY-MM-DD" --confidence "high"
 ```
 
-If it succeeds, output the success to the user and finish the run.
+If it succeeds, output the success to the user. If there are more PDFs remaining in `input_data/`, return to **Step 1** for the next file. Otherwise, print a final summary of all processed documents and finish the run.
 
 ### Step 6: Reflection — Use LLM Knowledge (Fallback)
 
