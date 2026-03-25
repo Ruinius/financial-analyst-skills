@@ -339,7 +339,17 @@ If no reconciliation table is found in an earnings announcement, note "GAAP Reco
 
 ## Step 6: Assemble JSON and Run Script
 
-Combine all extracted data into a single JSON file with top-level keys: `balance_sheet`, `income_statement`, `organic_growth`, `gaap_reconciliation`. Save to a temporary file (e.g., `tmp/TICKER_extracted.json`).
+  Combine all extracted data into a single JSON file with top-level keys: `balance_sheet`, `income_statement`, `organic_growth`, `gaap_reconciliation`. Save to a temporary file (e.g., `tmp/TICKER_extracted.json`).
+  
+  > ⚠️ **IMPORTANT**: The script `transform_and_append.py` may crash with an `AttributeError` if `gaap_reconciliation` is set to `null` or `None`. If no reconciliation is found, provide an empty object with an empty list for `line_items`:
+  > ```json
+  > "gaap_reconciliation": {
+  >   "reconciliation_type": "Operating Income",
+  >   "unit": "thousands",
+  >   "line_items": []
+  > }
+  > ```
+
 
 Run the centralized script:
 

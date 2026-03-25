@@ -37,7 +37,15 @@ def calculate_modeling(ticker, md_path):
     raw_beta = market_data.get("beta", 1.5)
     shares_out = market_data.get("shares_outstanding", 0)
 
-    # 2. Historical & Qualitative Data
+    # 2. Read metadata unit
+    meta_kv = parse_kv_table(content, "# ")
+    unit_label = meta_kv.get("Unit", "thousands").strip().lower()
+    unit_suffix_map = {"thousands": "K", "millions": "M", "billions": "B"}
+    unit_suffix = unit_suffix_map.get(unit_label, "")
+    unit_factor_map = {"ones": 1, "thousands": 1_000, "millions": 1_000_000, "billions": 1_000_000_000}
+    unit_factor = unit_factor_map.get(unit_label, 1_000)
+
+    # 2b. Historical & Qualitative Data
     hist_table = parse_markdown_table(content, "## Financial History")
     if len(hist_table) < 4:
         print("Warning: Less than 4 quarters of history. Using available data.")
@@ -61,22 +69,62 @@ def calculate_modeling(ticker, md_path):
     g_mag_match = re.search(r'([+-]?\d+)\s*pp', growth_mag_str)
     growth_magnitude = (float(g_mag_match.group(1)) / 100.0) if g_mag_match else 0
 
+    # 2c. Read balance sheet data from the most recent processed document
+    doc_table = parse_markdown_table(content, "## Processed Documents")
+    cash = 0
+    debt = 0
+    interest = 0
+    if doc_table:
+        # Get most recent doc filename from the last row
+        last_doc = doc_table[-1]
+        doc_file = re.search(r'\[([^\]]+\.md)\]', last_doc.get("File", ""))
+        if doc_file:
+            doc_dir = os.path.dirname(md_path)
+            doc_path = os.path.join(doc_dir, doc_file.group(1))
+            if os.path.exists(doc_path):
+                with open(doc_path, "r", encoding="utf-8") as df:
+                    doc_content = df.read()
+                # Parse balance sheet line items for cash/debt
+                bs_items = parse_markdown_table(doc_content, "### Line Items")
+                # Also try financial summary for interest
+                fin_summary = parse_kv_table(doc_content, "## Financial Summary")
+                
+                debt_names = ["short_term_debt", "long_term_debt", "current_portion_long_term_debt",
+                              "short_term_borrowings", "long_term_borrowings", "notes_payable"]
+                cash_names = ["cash_and_equivalents", "short_term_investments", "long_term_investments"]
+                
+                for item in bs_items:
+                    std = item.get("Standardized Name", "").strip()
+                    val = clean_value(item.get("Value", "0"))
+                    if std in cash_names:
+                        cash += abs(val)
+                    if std in debt_names:
+                        debt += abs(val)
+                
+                # Interest expense from financial summary
+                int_val = clean_value(fin_summary.get("Interest Expense", "0"))
+                interest = abs(int_val) * 4  # Annualize quarterly
+                
+                print(f"  Balance sheet data from {doc_file.group(1)}: cash={cash}, debt={debt}, interest_ann={interest}")
+    
+    if debt == 0:
+        print("  Note: No debt found on balance sheet. Company appears debt-free.")
+
     # 3. WACC Calculation
     rf = 0.042
     erp = 0.05
     adj_beta = (2/3) * raw_beta + (1/3) * 1.0
     cost_equity = rf + adj_beta * erp
     
-    # Try to find current debt in metadata, else fallback
-    debt = 6228 # ADBE Q1 2026 total debt (849 + 5379)
-    interest = 252 # Ann. Q1 (63*4)
-    cost_debt = interest / debt if debt else 0.05
+    cost_debt = (interest / debt) if debt > 0 else 0.05
     tax_stat = 0.25
     
-    mcap_m = market_cap / 1e6
-    w_e = mcap_m / (mcap_m + debt) if (mcap_m + debt) else 1.0
+    # Convert debt to same scale as market cap for weight calculation
+    debt_abs = debt * unit_factor  # Convert to absolute dollars
+    mcap = market_cap
+    w_e = mcap / (mcap + debt_abs) if (mcap + debt_abs) else 1.0
     w_d = 1.0 - w_e
-    wacc_raw = w_e * cost_equity + w_d * cost_debt * (1 - tax_stat)
+    wacc_raw = w_e * cost_equity + w_d * cost_debt * (1 - tax_stat) if debt > 0 else cost_equity
     wacc = max(0.06, min(0.15, wacc_raw))
 
     # 4. DCF Assumptions
@@ -131,16 +179,17 @@ def calculate_modeling(ticker, md_path):
     sum_pv_fcf = sum(p["pv"] for p in projections)
     enterprise_val = sum_pv_fcf + pv_tv
     
-    # 6. Intrinsic Value
-    cash = 6332 + 558 # ADBE Q1 2026 cash + st investments
+    # 6. Intrinsic Value (cash and debt already read from balance sheet above)
     equity_val = enterprise_val + cash - debt
-    shares_m = shares_out / 1e6
-    ivps = equity_val / shares_m if shares_m else 0
+    # Convert equity value to absolute dollars, then divide by absolute shares
+    equity_val_abs = equity_val * unit_factor  # e.g. thousands * 1000 = dollars
+    ivps = equity_val_abs / shares_out if shares_out else 0
 
     # 7. Update Metadata.md
     today = datetime.now().strftime("%Y-%m-%d")
     
     # Build sections
+    U = unit_suffix  # shorthand
     wacc_section = f"""## WACC
 
 | Field | Value |
@@ -152,8 +201,8 @@ def calculate_modeling(ticker, md_path):
 | Unlevered Beta | {adj_beta:.4f} |
 | Adjusted Beta (Blume's) | {adj_beta:.4f} |
 | Cost of Equity | {cost_equity*100:.2f}% |
-| Total Debt | ${debt}M |
-| Interest Expense (Ann.) | ${interest}M |
+| Total Debt | ${debt:,.0f}{U} |
+| Interest Expense (Ann.) | ${interest:,.0f}{U} |
 | Cost of Debt | {cost_debt*100:.2f}% |
 | Market Cap | ${market_cap:,} |
 | Weight of Equity | {w_e*100:.2f}% |
@@ -176,8 +225,8 @@ def calculate_modeling(ticker, md_path):
 |-----------|-------|
 | Adjusted Tax Rate | {l4q_tax*100:.2f}% |
 | WACC | {wacc*100:.2f}% |
-| Base Revenue (Annualized) | ${base_rev:,.0f}M |
-| Base Invested Capital | $-1,976M |
+| Base Revenue (Annualized) | ${base_rev:,.0f}{U} |
+| Base Invested Capital | $-1,976{U} |
 | Calculation Date | {today} |
 
 ### Assumption Rationale
@@ -215,10 +264,10 @@ def calculate_modeling(ticker, md_path):
 
 | Field | Value |
 |-------|-------|
-| Sum of PV (Years 1-10) | ${sum_pv_fcf:,.0f}M |
-| PV of Terminal Value | ${pv_tv:,.0f}M |
-| Terminal Value (undiscounted) | ${terminal_val:,.0f}M |
-| **Enterprise Value** | **${enterprise_val:,.0f}M** |
+| Sum of PV (Years 1-10) | ${sum_pv_fcf:,.0f}{U} |
+| PV of Terminal Value | ${pv_tv:,.0f}{U} |
+| Terminal Value (undiscounted) | ${terminal_val:,.0f}{U} |
+| **Enterprise Value** | **${enterprise_val:,.0f}{U}** |
 | TV as % of EV | {pv_tv/enterprise_val*100:.1f}% |
 | Calculation Date | {today} |
 """
@@ -227,11 +276,11 @@ def calculate_modeling(ticker, md_path):
 
 | Field | Value |
 |-------|-------|
-| Enterprise Value | ${enterprise_val:,.0f}M |
-| (+) Cash and Equivalents | ${cash:,.0f}M |
-| (-) Total Debt | ${debt:,.0f}M |
-| **Equity Value** | **${equity_val:,.0f}M** |
-| Diluted Shares Outstanding | {shares_m:.0f}M |
+| Enterprise Value | ${enterprise_val:,.0f}{U} |
+| (+) Cash and Equivalents | ${cash:,.0f}{U} |
+| (-) Total Debt | ${debt:,.0f}{U} |
+| **Equity Value** | **${equity_val:,.0f}{U}** |
+| Diluted Shares Outstanding | {shares_out / 1e6:.0f}M |
 | **Intrinsic Value Per Share** | **${ivps:.2f}** |
 | Currency | USD |
 | Current Market Price | ${share_price:.2f} |
