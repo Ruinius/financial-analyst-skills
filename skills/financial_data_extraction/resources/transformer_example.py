@@ -59,11 +59,11 @@ def predict(endpoint, items):
 if __name__ == "__main__":
     # --- Balance Sheet Example ---
     bs_items = [
-        {"line_name": "Cash and cash equivalents", "line_value": 2243971, "line_category": "assets"},
-        {"line_name": "Inventories", "line_value": 1323602, "line_category": "assets"},
-        {"line_name": "Property and equipment, net", "line_value": 1545811, "line_category": "assets"},
-        {"line_name": "Total assets", "line_value": 7091941, "line_category": "assets"},
-        {"line_name": "Accounts payable", "line_value": 348441, "line_category": "liabilities"},
+        {"line_name": "Cash and cash equivalents", "line_value": 2243971, "line_category": "current_assets"},
+        {"line_name": "Inventories", "line_value": 1323602, "line_category": "current_assets"},
+        {"line_name": "Property and equipment, net", "line_value": 1545811, "line_category": "noncurrent_assets"},
+        {"line_name": "Total assets", "line_value": 7091941, "line_category": "noncurrent_assets"},
+        {"line_name": "Accounts payable", "line_value": 348441, "line_category": "current_liabilities"},
     ]
 
     print("=== Balance Sheet Standardization ===")

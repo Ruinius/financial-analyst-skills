@@ -39,7 +39,9 @@ def parse_kv_table(text, section_name):
     for r in rows:
         keys = list(r.keys())
         if len(keys) >= 2:
-            result[r[keys[0]]] = r[keys[1]]
+            key = r[keys[0]].strip().replace("**", "")
+            val = r[keys[1]].strip().replace("**", "")
+            result[key] = val
     return result
 
 def clean_value(val):

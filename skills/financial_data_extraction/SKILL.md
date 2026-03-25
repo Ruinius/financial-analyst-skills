@@ -83,10 +83,12 @@ Extract **every** line item for the **current period column** only. The extracti
   "currency": "USD",
   "unit": "thousands",
   "line_items": [
-    {"line_name": "Cash and cash equivalents", "line_value": 2243971, "line_category": "assets"},
-    {"line_name": "Inventories", "line_value": 1323602, "line_category": "assets"},
-    {"line_name": "Total current assets", "line_value": 4060577, "line_category": "assets"},
-    {"line_name": "Accounts payable", "line_value": 348441, "line_category": "liabilities"},
+    {"line_name": "Cash and cash equivalents", "line_value": 2243971, "line_category": "current_assets"},
+    {"line_name": "Inventories", "line_value": 1323602, "line_category": "current_assets"},
+    {"line_name": "Total current assets", "line_value": 4060577, "line_category": "current_assets"},
+    {"line_name": "Property and equipment, net", "line_value": 1545811, "line_category": "noncurrent_assets"},
+    {"line_name": "Accounts payable", "line_value": 348441, "line_category": "current_liabilities"},
+    {"line_name": "Non-current lease liabilities", "line_value": 1154012, "line_category": "noncurrent_liabilities"},
     {"line_name": "Stockholders' equity", "line_value": 4232081, "line_category": "equity"}
   ]
 }
@@ -97,7 +99,7 @@ Extract **every** line item for the **current period column** only. The extracti
 - Extract values EXACTLY as shown — do NOT round, estimate, or calculate
 - `line_name`: Shorten names, remove "net of..." notes
 - `line_value`: Numeric only (no commas, no currency symbols). Use negative values where shown
-- `line_category`: One of `assets`, `liabilities`, `equity`
+- `line_category`: One of `current_assets`, `noncurrent_assets`, `current_liabilities`, `noncurrent_liabilities`, `equity`. Classify based on where the item appears in the balance sheet (items above "Total current assets" are `current_assets`, items below are `noncurrent_assets`, etc.)
 - `currency`: Use the document's actual currency — do NOT assume or convert to USD
 - `unit`: Only set if EXPLICITLY stated (e.g., "In thousands", "In millions"). Otherwise null
 - Include ALL subtotals and totals (Total Current Assets, Total Assets, Total Liabilities, etc.)

@@ -110,28 +110,30 @@ def calculate_invested_capital(content, is_items):
     """Calculate Invested Capital from Balance Sheet data."""
     bs_content = _section_content(content, "## Balance Sheet")
     bs_items = parse_markdown_table(bs_content, "### Line Items")
-    bs_only = [x for x in bs_items if "Category" in x]
-
+    
     revenue = _get_revenue(is_items)
     _, multiplier = _get_time_period(content)
     ann_rev = revenue * multiplier
 
     oca_items, ocl_items, onca_items, oncl_items = [], [], [], []
 
-    for item in bs_only:
+    for item in bs_items:
         val = clean_value(item.get("Value", "0"))
-        if item.get("Calculated", "Yes") == "Yes" or item.get("Operating", "Yes") == "No":
+        # Skip calculated or non-operating items
+        if item.get("Calculated", "No") == "Yes" or item.get("Operating", "Yes") == "No":
             continue
-        cat = item.get("Category", "")
-        name = item.get("Line Name", "")
+            
+        cat = item.get("Category", "").lower()
+        line_name = item.get("Line Name", "")
+
         if cat == "current_assets":
-            oca_items.append((name, val))
+            oca_items.append((line_name, val))
         elif cat == "current_liabilities":
-            ocl_items.append((name, val))
+            ocl_items.append((line_name, val))
         elif cat == "noncurrent_assets":
-            onca_items.append((name, val))
+            onca_items.append((line_name, val))
         elif cat == "noncurrent_liabilities":
-            oncl_items.append((name, val))
+            oncl_items.append((line_name, val))
 
     oca = sum(x[1] for x in oca_items)
     ocl = sum(x[1] for x in ocl_items)
@@ -302,6 +304,26 @@ def run_all(md_path):
     """Execute all financial calculations in dependency order."""
     with open(md_path, "r", encoding="utf-8") as f:
         content = f.read()
+
+    # Idempotency: Remove existing calculation sections if they exist
+    original_content = content
+    for section in ["## EBITA", "## Invested Capital", "## Tax Rates", "## Financial Summary"]:
+        if section in content:
+            # Strip everything from the section header to the next --- or end of file
+            parts = content.split(f"\n\n---\n\n{section}")
+            if len(parts) > 1:
+                content = parts[0]
+            else:
+                # If separator format differs, try simple split
+                parts = content.split(section)
+                content = parts[0]
+    
+    if content != original_content:
+        # Trim multiple --- if any
+        content = re.sub(r'(\n\s*---\s*)+\n*$', '\n\n---\n', content.strip())
+        with open(md_path, "w", encoding="utf-8") as f:
+            f.write(content)
+        print(f"  [0/4] Existing calculation sections removed for fresh run")
 
     # Parse Income Statement once
     is_content = _section_content(content, "## Income Statement")
