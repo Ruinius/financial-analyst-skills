@@ -23,63 +23,67 @@ PDF → Classification → Extraction → Calculations → Organization → DCF 
 
 ## Skills
 
-All 21 skills are registered in [`skills/skills_metadata.json`](skills/skills_metadata.json). Each includes a `SKILL.md` with step-by-step instructions, worked examples, validation checks, and expected output formats.
+All 7 skills are registered in [`skills/skills_metadata.json`](skills/skills_metadata.json). Each skill is a single, consolidated `SKILL.md` with step-by-step instructions, worked examples, validation checks, and expected output formats. A shared [`SHARED_POSTRUN.md`](skills/SHARED_POSTRUN.md) defines common example-curation and self-improvement steps.
 
-| #   | Skill                                                                          | Description                                                                          |
-| --- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
-| 0   | [**Pipeline Orchestrator**](skills/PIPELINE.md)                                | Runbook that routes documents through the full skill chain based on document type    |
-|     |                                                                                |                                                                                      |
-| 1   | [**Document Classification**](skills/document_classification/)                 | Classify PDFs, extract metadata (ticker, date, doc type), validate via Yahoo Finance |
-|     |                                                                                |                                                                                      |
-| 2   | [**Financial Data Extraction**](skills/financial_data_extraction/)             | Extract structured financial data from classified PDFs                               |
-| 2a  | ↳ [Balance Sheet](skills/financial_data_extraction/balance_sheet/)             | Extract balance sheet line items, standardize via Tiger-Transformer                  |
-| 2b  | ↳ [Income Statement](skills/financial_data_extraction/income_statement/)       | Extract income statement line items and share counts, normalize expense signs        |
-| 2c  | ↳ [Organic Growth](skills/financial_data_extraction/organic_growth/)           | Extract organic/constant-currency growth rates                                       |
-| 2d  | ↳ [GAAP Reconciliation](skills/financial_data_extraction/gaap_reconciliation/) | Extract GAAP-to-non-GAAP operating income reconciliation                             |
-|     |                                                                                |                                                                                      |
-| 3   | [**Financial Calculations**](skills/financial_calculations/)                   | Compute derived metrics via deterministic Python scripts                             |
-| 3a  | ↳ [EBITA](skills/financial_calculations/ebita/)                                | Earnings Before Interest, Tax, and Amortization                                      |
-| 3b  | ↳ [Tax Rate](skills/financial_calculations/tax/)                               | Effective and adjusted (operating) tax rates                                         |
-| 3c  | ↳ [Invested Capital](skills/financial_calculations/invested_capital/)          | NWC + net long-term operating assets                                                 |
-| 3d  | ↳ [Summary Table](skills/financial_calculations/summary_table/)                | Final summary with NOPAT, ROIC, and all key metrics                                  |
-|     |                                                                                |                                                                                      |
-| 4   | [**Document Organization**](skills/document_organization/)                     | Move outputs to `output_data/TICKER/`, create metadata, cross-document date healing  |
-|     |                                                                                |                                                                                      |
-| 5   | [**Qualitative Assessment**](skills/qualitative_assessment/)                   | Assess economic moat, margin trajectory, and growth trajectory from analyst reports  |
-|     |                                                                                |                                                                                      |
-| 6   | [**Financial Modeling**](skills/financial_modeling/)                           | Build a multi-stage DCF from historical data + qualitative outlook                   |
-| 6a  | ↳ [WACC](skills/financial_modeling/wacc/)                                      | Weighted Average Cost of Capital via CAPM (unlever beta → Blume's → bound 7-11%)     |
-| 6b  | ↳ [Assumptions](skills/financial_modeling/assumptions/)                        | Three-stage revenue growth, EBITA margin, capital turnover from history + outlook    |
-| 6c  | ↳ [DCF Model](skills/financial_modeling/dcf/)                                  | 10-year FCF projections + terminal value via Gordon Growth Model                     |
-| 6d  | ↳ [Intrinsic Value](skills/financial_modeling/intrinsic_value/)                | Enterprise Value → equity bridge → intrinsic value per share                         |
-| 6e  | ↳ [JSON Export](skills/financial_modeling/json_export/)                        | Export model to JSON for the interactive HTML viewer                                 |
+| Phase | Skill                                                          | Description                                                                                                    |
+| ----- | -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| —     | [**Pipeline Orchestrator**](skills/PIPELINE.md)                | Runbook that routes documents through the full skill chain based on document type                               |
+| 1     | [**Document Classification**](skills/document_classification/) | Classify PDFs, extract metadata (ticker, date, doc type), validate via Yahoo Finance                           |
+| 2     | [**Financial Data Extraction**](skills/financial_data_extraction/) | Extract balance sheet, income statement, shares, organic growth, and GAAP reconciliation; standardize via Tiger-Transformer |
+| 3     | [**Financial Calculations**](skills/financial_calculations/)   | Single deterministic script computes EBITA, tax rates, invested capital, NOPAT, ROIC, and summary table        |
+| 4     | [**Document Organization**](skills/document_organization/)     | Move outputs to `output_data/TICKER/`, create/update metadata, cross-document date healing                     |
+| 5     | [**Qualitative Assessment**](skills/qualitative_assessment/)   | Assess economic moat, margin trajectory, and growth trajectory from analyst reports                             |
+| 6     | [**Financial Modeling**](skills/financial_modeling/)            | Single script: WACC → three-stage assumptions → 10-year DCF → intrinsic value per share → JSON export          |
 
 ## Project Structure
 
 ```
 financial-analyst-skills/
-├── skills/                 # AI skill definitions (SKILL.md + examples + scripts)
+├── skills/                     # AI skill definitions
+│   ├── PIPELINE.md             # Pipeline orchestrator runbook
+│   ├── SHARED_POSTRUN.md       # Shared example-curation & self-improvement steps
+│   ├── skills_metadata.json    # Skill registry
 │   ├── document_classification/
+│   │   ├── SKILL.md
+│   │   ├── examples/           # Gold-standard worked example
+│   │   ├── resources/          # Reference files (document-type taxonomy, etc.)
+│   │   └── scripts/            # Automation scripts
 │   ├── financial_data_extraction/
+│   │   ├── SKILL.md            # Consolidated: BS + IS + shares + organic growth + GAAP recon
+│   │   ├── examples/
+│   │   ├── resources/
+│   │   └── scripts/            # transform_and_append.py
 │   ├── financial_calculations/
+│   │   ├── SKILL.md            # Consolidated: EBITA + tax + invested capital + summary
+│   │   ├── examples/
+│   │   └── scripts/            # calculate.py
 │   ├── document_organization/
+│   │   ├── SKILL.md
+│   │   ├── examples/
+│   │   └── scripts/            # organize.py
 │   ├── qualitative_assessment/
+│   │   ├── SKILL.md
+│   │   └── examples/
 │   └── financial_modeling/
-├── tools/                  # Shared tools and utilities
-│   ├── markdown_parser.py            # Utility for parsing markdown outputs
-│   ├── model/                        # (gitignored) Tiger-transformer model files
-│   ├── market_data.py                # Yahoo Finance lookups (validate, profile, fx)
-│   ├── tiger_transformer_server.py   # Local transformer model server
-│   ├── financial_model_viewer.html   # Interactive DCF viewer (zero-dependency)
-│   ├── simple_frontend_server.py     # Static file server + scenario save endpoint
-│   ├── start_transformer.bat         # Launch transformer server
-│   ├── start_file_server.bat         # Launch file server for PDF reading
-│   └── start_frontend.bat            # Launch frontend viewer server
-├── docs/                   # Project documentation and roadmap
-├── data/                   # Static data and configurations
-├── input_data/             # (gitignored) Drop PDFs here to process
-├── processing_data/        # (gitignored) Files currently being processed
-└── output_data/            # (gitignored) Final output organized by ticker
+│       ├── SKILL.md            # Consolidated: WACC + assumptions + DCF + intrinsic value + JSON
+│       ├── examples/
+│       └── scripts/            # calculate.py
+├── tools/                      # Shared tools and utilities
+│   ├── markdown_parser.py                      # Utility for parsing markdown outputs
+│   ├── market_data.py                          # Yahoo Finance lookups (validate, profile, fx)
+│   ├── tiger_transformer_server.py             # Local transformer model server
+│   ├── financial_model_viewer.html             # Interactive DCF viewer (zero-dependency)
+│   ├── simple_frontend_server.py               # Static file server + scenario save endpoint
+│   ├── bs_calculated_operating_mapping.csv     # Balance-sheet operating-item mapping
+│   ├── is_calculated_operating_expense_mapping.csv  # Income-statement expense mapping
+│   ├── model/                                  # (gitignored) Tiger-transformer model files
+│   ├── start_transformer.bat                   # Launch transformer server
+│   ├── start_file_server.bat                   # Launch file server for PDF reading
+│   └── start_frontend.bat                      # Launch frontend viewer server
+├── docs/                       # Project documentation and roadmap
+├── input_data/                 # (gitignored) Drop PDFs here to process
+├── processing_data/            # (gitignored) Files currently being processed
+└── output_data/                # (gitignored) Final output organized by ticker
     └── TICKER/
         ├── TICKER_metadata.md         # Company metadata + financial history
         ├── TICKER_financial_model.json # DCF model (consumed by viewer)
@@ -108,7 +112,7 @@ financial-analyst-skills/
    ```
 
 2. **Configure Tiger-Transformer:**
-   The standardization skills require the [tiger-transformer](https://huggingface.co/Ruinius/tiger-transformer) model.
+   The extraction skill requires the [tiger-transformer](https://huggingface.co/Ruinius/tiger-transformer) model.
    - Download the model repository files (including `model.safetensors`, `config.json`, `label_map.json`, etc.) from HuggingFace.
    - Create a `tools/model/` directory in this project and place all downloaded files inside it.
 
