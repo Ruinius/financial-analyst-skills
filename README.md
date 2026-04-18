@@ -167,3 +167,4 @@ See [docs/ROADMAP.md](docs/ROADMAP.md) for the full architecture plan, pipeline 
 
 - [tiger-cafe](https://github.com/Ruinius/tiger-cafe) — Full-stack financial document processing app (FastAPI + React)
 - [tiger-transformer](https://github.com/Ruinius/tiger-transformer) — Fine-tuned FINBERT model for standardizing financial line items
+- [offboarding-sme-clone](https://github.com/Ruinius/offboarding-sme-clone) — Zero-infrastructure tool for capturing and exporting SME knowledge into structured, agent-consumable "SKILL.md" manifests
