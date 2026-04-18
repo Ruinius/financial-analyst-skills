@@ -113,10 +113,7 @@ financial-analyst-skills/
    ```bash
    git clone https://github.com/Ruinius/financial-analyst-skills.git
    cd financial-analyst-skills
-   python -m venv .venv
-   source .venv/bin/activate       # Linux/Mac
-   .venv\Scripts\activate          # Windows
-   pip install -r requirements.txt
+   uv sync
    ```
 
 2. **Configure Tiger-Transformer:**
