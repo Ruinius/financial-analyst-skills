@@ -676,11 +676,11 @@
         <div class="assumption-group">
           <h4>Capital Turnover</h4>
           <div class="assumption-row"><label>Stage 1</label>
-            <input type="text" id="a_mct1" value="${assumptions.marginal_capital_turnover_stage1.toFixed(1)}" data-key="marginal_capital_turnover_stage1"></div>
+            <input type="text" id="a_mct1" value="${(assumptions.marginal_capital_turnover_stage1 || 0).toFixed(1)}" data-key="marginal_capital_turnover_stage1"></div>
           <div class="assumption-row"><label>Stage 2</label>
-            <input type="text" id="a_mct2" value="${assumptions.marginal_capital_turnover_stage2.toFixed(1)}" data-key="marginal_capital_turnover_stage2"></div>
+            <input type="text" id="a_mct2" value="${(assumptions.marginal_capital_turnover_stage2 || 0).toFixed(1)}" data-key="marginal_capital_turnover_stage2"></div>
           <div class="assumption-row"><label>Terminal</label>
-            <input type="text" id="a_mctt" value="${assumptions.marginal_capital_turnover_terminal.toFixed(1)}" data-key="marginal_capital_turnover_terminal"></div>
+            <input type="text" id="a_mctt" value="${(assumptions.marginal_capital_turnover_terminal || 0).toFixed(1)}" data-key="marginal_capital_turnover_terminal"></div>
         </div>
         <div class="assumption-group">
           <h4>WACC & Tax</h4>
@@ -765,7 +765,7 @@
           <div class="scenario-item">
             <span class="name">${s.name || "Unnamed"}</span>
             <span class="meta">${s.date || ""}</span>
-            <span style="font-weight:600;${s.upside_pct >= 0 ? "color:var(--green)" : "color:var(--red)"}">${fmtPrice(s.iv_per_share, sym)} (${s.upside_pct >= 0 ? "+" : ""}${s.upside_pct.toFixed(1)}%)</span>
+            <span style="font-weight:600;${(s.upside_pct || 0) >= 0 ? "color:var(--green)" : "color:var(--red)"}">${fmtPrice(s.iv_per_share, sym)} (${(s.upside_pct || 0) >= 0 ? "+" : ""}${(s.upside_pct || 0).toFixed(1)}%)</span>
           </div>
         `,
           )
@@ -780,9 +780,9 @@
       <div class="card-title">WACC Detail</div>
       <div class="valuation-grid">
         <table class="val-table">
-          <tr><td>Raw Levered Beta</td><td>${MODEL.wacc.beta_levered}</td></tr>
-          <tr><td>Unlevered Beta (Hamada)</td><td>${MODEL.wacc.beta_unlevered.toFixed(4)}</td></tr>
-          <tr><td>Adjusted Beta (Blume's)</td><td>${MODEL.wacc.beta_adjusted.toFixed(4)}</td></tr>
+          <tr><td>Raw Levered Beta</td><td>${MODEL.wacc.beta_levered || "—"}</td></tr>
+          <tr><td>Unlevered Beta (Hamada)</td><td>${fmtDec(MODEL.wacc.beta_unlevered)}</td></tr>
+          <tr><td>Adjusted Beta (Blume's)</td><td>${fmtDec(MODEL.wacc.beta_adjusted)}</td></tr>
           <tr><td>Risk-Free Rate</td><td>${fmtPct(MODEL.wacc.risk_free_rate)}</td></tr>
           <tr><td>Equity Risk Premium</td><td>${fmtPct(MODEL.wacc.equity_risk_premium)}</td></tr>
           <tr><td>Cost of Equity</td><td>${fmtPct(MODEL.wacc.cost_of_equity)}</td></tr>
