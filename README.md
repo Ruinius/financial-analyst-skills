@@ -1,5 +1,13 @@
 # financial-analyst-skills
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![Status: Personal Project](https://img.shields.io/badge/Status-Personal%20Project-orange)](https://github.com/Ruinius/financial-analyst-skills)
+[![PRs: Not Accepted](https://img.shields.io/badge/PRs-Not%20Accepted-red)](https://github.com/Ruinius/financial-analyst-skills)
+[![HuggingFace: tiger-transformer](https://img.shields.io/badge/🤗%20Model-tiger--transformer-FFD21E)](https://huggingface.co/Ruinius/tiger-transformer)
+[![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?logo=pytorch&logoColor=white)](https://pytorch.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+
 **Turn any earnings PDF into a full DCF valuation with AI agents using Skills.**
 
 Drop a financial document into a folder, point an AI agent at the skills in this repo, and get a complete equity research workflow: document classification, structured data extraction, financial calculations, qualitative assessment, and a 10-year discounted cash flow model with an interactive viewer. No databases, no backend, no React — just markdown files, a fine-tuned transformer, and an AI that follows instructions.
