@@ -38,12 +38,48 @@ def calculate_modeling(ticker, md_path):
     shares_out = market_data.get("shares_outstanding", 0)
 
     # 2. Read metadata unit
-    meta_kv = parse_kv_table(content, "# ")
-    unit_label = meta_kv.get("Unit", "thousands").strip().lower()
+    unit_label = "thousands"
+    local_currency = "USD"
+    adr_ratio = 1.0
+    
+    meta_lines = content.split('\n')
+    in_top_table = False
+    for line in meta_lines:
+        if line.startswith('# '):
+            in_top_table = True
+        elif in_top_table and '|' in line:
+            if 'Unit' in line:
+                m = re.search(r'\|\s*Unit\s*\|\s*([^|]+)\s*\|', line, re.IGNORECASE)
+                if m: unit_label = m.group(1).strip().lower()
+            elif 'Currency' in line:
+                m = re.search(r'\|\s*Currency\s*\|\s*([^|]+)\s*\|', line, re.IGNORECASE)
+                if m: local_currency = m.group(1).strip().upper()
+            elif 'ADR Ratio' in line:
+                m = re.search(r'\|\s*ADR Ratio\s*\|\s*([\d\.]+)\s*\|', line, re.IGNORECASE)
+                if m: adr_ratio = float(m.group(1).strip())
+        elif in_top_table and line.startswith('##'):
+            break
+
     unit_suffix_map = {"thousands": "K", "millions": "M", "billions": "B"}
     unit_suffix = unit_suffix_map.get(unit_label, "")
     unit_factor_map = {"ones": 1, "thousands": 1_000, "millions": 1_000_000, "billions": 1_000_000_000}
     unit_factor = unit_factor_map.get(unit_label, 1_000)
+
+    fx_rate = 1.0
+    if local_currency != "USD":
+        query_curr = "CNY" if local_currency == "RMB" else local_currency
+        fx_cmd = [sys.executable, os.path.join(os.path.dirname(__file__), "../../../tools/market_data.py"), "profile", f"{query_curr}USD=X"]
+        fx_res = subprocess.run(fx_cmd, capture_output=True, text=True)
+        if fx_res.returncode == 0:
+            try:
+                fx_data = json.loads(fx_res.stdout)
+                if fx_data.get("valid"):
+                    fx_rate = fx_data.get("share_price", 1.0)
+                    print(f"  Fetched FX Rate: 1 {local_currency} ({query_curr}) = {fx_rate} USD")
+                else:
+                    print(f"  FX fetch failed for {query_curr}USD=X")
+            except Exception as e:
+                print(f"Error parsing FX data: {e}")
 
     # 2b. Historical & Qualitative Data
     hist_table = parse_markdown_table(content, "## Financial History")
@@ -105,6 +141,11 @@ def calculate_modeling(ticker, md_path):
                 int_val = clean_value(fin_summary.get("Interest Expense", "0"))
                 interest = abs(int_val) * 4  # Annualize quarterly
                 
+                reported_shares = clean_value(fin_summary.get("Diluted Shares Outstanding", "0"))
+                if reported_shares > 0:
+                    shares_out = (reported_shares * unit_factor) / adr_ratio
+                    print(f"  Using reported shares ({reported_shares} {unit_label}) / ADR ratio {adr_ratio} -> {shares_out:,.0f} pricing shares")
+                
                 print(f"  Balance sheet data from {doc_file.group(1)}: cash={cash}, debt={debt}, interest_ann={interest}")
     
     if debt == 0:
@@ -113,18 +154,26 @@ def calculate_modeling(ticker, md_path):
     # 3. WACC Calculation
     rf = 0.042
     erp = 0.05
-    adj_beta = (2/3) * raw_beta + (1/3) * 1.0
-    cost_equity = rf + adj_beta * erp
-    
-    cost_debt = (interest / debt) if debt > 0 else 0.05
     tax_stat = 0.25
     
     # Convert debt to same scale as market cap for weight calculation
     debt_abs = debt * unit_factor  # Convert to absolute dollars
-    mcap = market_cap
-    w_e = mcap / (mcap + debt_abs) if (mcap + debt_abs) else 1.0
+    mcap_local = market_cap / fx_rate if fx_rate else market_cap
+    
+    # Unlever beta using Hamada equation
+    d_to_e = debt_abs / mcap_local if mcap_local > 0 else 0
+    unlevered_beta = raw_beta / (1 + (1 - tax_stat) * d_to_e)
+    
+    # Blume's adjustment
+    adj_beta = (2/3) * raw_beta + (1/3) * 1.0
+    
+    cost_equity = rf + adj_beta * erp
+    cost_debt = (interest / debt) if debt > 0 else 0.05
+    
+    w_e = mcap_local / (mcap_local + debt_abs) if (mcap_local + debt_abs) else 1.0
     w_d = 1.0 - w_e
     wacc_raw = w_e * cost_equity + w_d * cost_debt * (1 - tax_stat) if debt > 0 else cost_equity
+    wacc = max(0.06, min(0.15, wacc_raw))
     wacc = max(0.06, min(0.15, wacc_raw))
 
     # 4. DCF Assumptions
@@ -183,7 +232,8 @@ def calculate_modeling(ticker, md_path):
     equity_val = enterprise_val + cash - debt
     # Convert equity value to absolute dollars, then divide by absolute shares
     equity_val_abs = equity_val * unit_factor  # e.g. thousands * 1000 = dollars
-    ivps = equity_val_abs / shares_out if shares_out else 0
+    ivps_local = equity_val_abs / shares_out if shares_out else 0
+    ivps = ivps_local * fx_rate
 
     # 7. Update Metadata.md
     today = datetime.now().strftime("%Y-%m-%d")
@@ -198,7 +248,7 @@ def calculate_modeling(ticker, md_path):
 | Equity Risk Premium | {erp*100:.2f}% |
 | Country Risk Premium | 0.00% |
 | Raw Levered Beta | {raw_beta:.3f} |
-| Unlevered Beta | {adj_beta:.4f} |
+| Unlevered Beta | {unlevered_beta:.4f} |
 | Adjusted Beta (Blume's) | {adj_beta:.4f} |
 | Cost of Equity | {cost_equity*100:.2f}% |
 | Total Debt | ${debt:,.0f}{U} |
@@ -283,6 +333,8 @@ def calculate_modeling(ticker, md_path):
 | Diluted Shares Outstanding | {shares_out / 1e6:.0f}M |
 | **Intrinsic Value Per Share** | **${ivps:.2f}** |
 | Currency | USD |
+| FX Rate Applied | {fx_rate:.4f} |
+| ADR Ratio Applied | {adr_ratio:.1f} |
 | Current Market Price | ${share_price:.2f} |
 | **Upside/Downside** | **{(ivps/share_price - 1)*100:+.1f}%** |
 | Calculation Date | {today} |
@@ -308,22 +360,50 @@ def calculate_modeling(ticker, md_path):
     
     # 8. Update JSON
     json_path = md_path.replace("_metadata.md", "_financial_model.json")
+    js_data = {}
     if os.path.exists(json_path):
         with open(json_path, "r", encoding="utf-8") as f:
             js_data = json.load(f)
-        
-        js_data["generated_date"] = today
-        js_data["wacc"] = {
-            "risk_free_rate": rf, "equity_risk_premium": erp, "beta_levered": raw_beta,
-            "beta_adjusted": adj_beta, "cost_of_equity": cost_equity, "total_debt": debt,
-            "interest_expense_annual": interest, "market_cap_usd": market_cap, "wacc": wacc
+    else:
+        # Generate initial structure since it was missing
+        js_data = {
+            "ticker": ticker,
+            "company_name": ticker, # Fallback
+            "currency": local_currency,
+            "unit": unit_label,
+            "historical": l4q,
+            "projections": projections,
+            "terminal": {
+                "revenue": rev * (1 + terminal_growth),
+                "growth_rate": terminal_growth,
+                "terminal_value": terminal_val,
+                "pv_terminal": pv_tv
+            },
+            "assumptions": {
+                "revenue_growth_stage1": target_growth_yr5,
+                "revenue_growth_terminal": terminal_growth,
+                "ebita_margin_stage1": target_margin_yr5
+            },
+            "wacc": {},
+            "valuation": {}
         }
-        js_data["valuation"]["intrinsic_value_per_share"] = round(ivps, 2)
-        js_data["valuation"]["current_price"] = share_price
-        js_data["valuation"]["upside_downside_pct"] = round((ivps/share_price - 1)*100, 1)
         
-        with open(json_path, "w", encoding="utf-8") as f:
-            json.dump(js_data, f, indent=2)
+    js_data["generated_date"] = today
+    js_data["wacc"] = {
+        "risk_free_rate": rf, "equity_risk_premium": erp, "beta_levered": raw_beta,
+        "beta_adjusted": adj_beta, "cost_of_equity": cost_equity, "total_debt": debt,
+        "interest_expense_annual": interest, "market_cap_usd": market_cap, "wacc": wacc
+    }
+    if "valuation" not in js_data:
+        js_data["valuation"] = {}
+    js_data["valuation"]["intrinsic_value_per_share"] = round(ivps, 2)
+    js_data["valuation"]["current_price"] = share_price
+    js_data["valuation"]["upside_downside_pct"] = round((ivps/share_price - 1)*100, 1) if share_price else 0
+    js_data["valuation"]["enterprise_value"] = enterprise_val
+    js_data["valuation"]["equity_value"] = equity_val
+    
+    with open(json_path, "w", encoding="utf-8") as f:
+        json.dump(js_data, f, indent=2)
 
     print(f"--- Financial Modeling Complete for {ticker} ---")
     print(f"New IVPS: {ivps:.2f} (Upside: {(ivps/share_price - 1)*100:+.1f}%)")

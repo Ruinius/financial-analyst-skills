@@ -113,7 +113,7 @@ def _get_prevailing_unit(content):
         if normalize_unit_name(bs_unit) == normalize_unit_name(is_unit):
             return normalize_unit_name(bs_unit)
         # Disagree: take BS as default
-        print(f"  ⚠️  BS unit ({bs_unit}) differs from IS unit ({is_unit}). Using BS unit.")
+        print(f"  [WARN] BS unit ({bs_unit}) differs from IS unit ({is_unit}). Using BS unit.")
         return normalize_unit_name(bs_unit)
     return normalize_unit_name(bs_unit or is_unit or "millions")
 
@@ -183,7 +183,7 @@ def harmonize_units(content):
                 new_val = convert_value(old_val, basic_unit, prevailing)
                 note = f"Shares (basic): {old_val} {basic_unit} → {new_val:.1f} {prevailing}"
                 notes.append(note)
-                print(f"  🔄 {note}")
+                print(f"  [UPDATE] {note}")
                 # Replace in content
                 content = content.replace(
                     f"| Basic Shares Outstanding   | {basic_match.group(1).strip()}",
@@ -202,7 +202,7 @@ def harmonize_units(content):
                 new_val = convert_value(old_val, diluted_unit, prevailing)
                 note = f"Shares (diluted): {old_val} {diluted_unit} → {new_val:.1f} {prevailing}"
                 notes.append(note)
-                print(f"  🔄 {note}")
+                print(f"  [UPDATE] {note}")
                 content = content.replace(
                     f"| Diluted Shares Outstanding | {diluted_match.group(1).strip()}",
                     f"| Diluted Shares Outstanding | {new_val:.1f}"
@@ -214,7 +214,7 @@ def harmonize_units(content):
                 conversions_needed = True
 
         if not conversions_needed:
-            print(f"  ✅ All units already match prevailing unit: {prevailing}")
+            print(f"  [OK] All units already match prevailing unit: {prevailing}")
 
     # Check Organic Growth prior-year revenue unit
     growth_section = _section_content(content, "## Organic Growth")
@@ -366,7 +366,7 @@ def update_metadata(existing_content, ticker, cls_meta, fin_summary, today_iso):
             cols = [c.strip() for c in row.split("|")]
             # cols[4] is Time Period
             if len(cols) > 4 and cols[4] == new_row_time and cls_meta["document_type"] in cols[3]:
-                print(f"  🔄 Replacing existing row for {new_row_time}")
+                print(f"  [UPDATE] Replacing existing row for {new_row_time}")
                 continue
             filtered.append(row)
 
@@ -426,7 +426,7 @@ def update_metadata(existing_content, ticker, cls_meta, fin_summary, today_iso):
         for row in fin_rows:
             cols = [c.strip() for c in row.split("|")]
             if len(cols) > 1 and cols[1] == new_tp:
-                print(f"  🔄 Replacing existing financial history for {new_tp}")
+                print(f"  [UPDATE] Replacing existing financial history for {new_tp}")
                 continue
             filtered_fin.append(row)
 
@@ -498,16 +498,16 @@ def move_files(md_path, ticker, project_root):
     # Move markdown
     if os.path.exists(src_md):
         shutil.move(src_md, dst_md)
-        moved.append(f"  📄 {md_basename} → output_data/{ticker}/{final_md}")
+        moved.append(f"  [FILE] {md_basename} -> output_data/{ticker}/{final_md}")
     else:
-        print(f"  ⚠️  Source markdown not found: {src_md}")
+        print(f"  [WARN] Source markdown not found: {src_md}")
 
     # Move PDF
     if os.path.exists(src_pdf):
         shutil.move(src_pdf, dst_pdf)
-        moved.append(f"  📄 {pdf_basename} → output_data/{ticker}/{final_pdf}")
+        moved.append(f"  [FILE] {pdf_basename} -> output_data/{ticker}/{final_pdf}")
     else:
-        print(f"  ⚠️  Source PDF not found: {src_pdf}")
+        print(f"  [WARN] Source PDF not found: {src_pdf}")
 
     # Cleanup: delete matching PDF from input_data/
     input_pdf_pattern = os.path.join(input_dir, f"{final_pdf.replace('.pdf', '')}*")
@@ -522,10 +522,10 @@ def move_files(md_path, ticker, project_root):
         if os.path.exists(match) and match not in cleaned:
             os.remove(match)
             cleaned.add(match)
-            moved.append(f"  🗑️  Cleaned up input_data/{os.path.basename(match)}")
+            moved.append(f"  [DELETE] Cleaned up input_data/{os.path.basename(match)}")
 
     if not cleaned:
-        print(f"  ℹ️  No matching files found in input_data/ to clean up")
+        print(f"  [INFO] No matching files found in input_data/ to clean up")
 
     return moved
 
@@ -561,7 +561,7 @@ def verify(ticker, md_basename, project_root):
 
     all_pass = all(v for _, v in checks)
     for name, status in checks:
-        icon = "✅" if status else "❌"
+        icon = "[OK]" if status else "[FAIL]"
         print(f"  {icon} {name}")
 
     return all_pass
@@ -638,8 +638,8 @@ def run(md_path):
     final_name = md_basename.replace("_temp", "")
     print(f"\n{'='*60}")
     if all_pass:
-        print(f"  ✅ Document organized:")
-        print(f"     {final_name} → output_data/{ticker}/")
+        print(f"  [OK] Document organized:")
+        print(f"     {final_name} -> output_data/{ticker}/")
         doc_count = sum(1 for f in os.listdir(output_dir) if f.endswith(".md") and "metadata" not in f)
         print(f"     Metadata updated: {doc_count} document(s) for {ticker}")
         if unit_notes:
@@ -648,7 +648,7 @@ def run(md_path):
         else:
             print(f"     Unit harmonization: No conversions needed")
     else:
-        print(f"  ❌ Organization completed with errors — check output above")
+        print(f"  [FAIL] Organization completed with errors — check output above")
     print(f"{'='*60}\n")
 
 

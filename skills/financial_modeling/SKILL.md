@@ -21,6 +21,7 @@ All modeling logic is consolidated into a single script that executes the comple
 | 5 | Generate Assumptions | Three-stage DCF assumptions blending historical trends + qualitative outlook |
 | 6 | Run DCF Projections | 10-year projections with interpolated growth/margin, terminal value via Gordon Growth |
 | 7 | Compute Intrinsic Value | Equity bridge: EV + Cash - Debt → Per Share |
+| 7b | FX & ADR Conversion | If reporting currency != USD, convert IVPS to USD. Apply ADR ratio to share count if applicable |
 | 8 | Update Metadata | Replaces WACC, Assumptions, DCF Model, and Intrinsic Value sections in markdown |
 | 9 | Update JSON Export | Patches `TICKER_financial_model.json` for the interactive viewer |
 
@@ -41,3 +42,5 @@ All modeling logic is consolidated into a single script that executes the comple
 | Tax Rate (statutory) | Hardcoded for WACC | 25% |
 | Tax Rate (NOPAT) | L4Q average adjusted tax rate | Varies |
 | WACC Bounds | Floor 6%, Cap 15% | — |
+| FX Rate | market_data.py if Currency != USD | 1.0 |
+| ADR Ratio | Parsed from metadata header | 1.0 |
