@@ -5,6 +5,7 @@
 - `.agents/`: Agent-specific configuration and data.
 - `assets/`: Project assets (images, etc.).
 - `docs/`: Project documentation.
+  - `AGENT_ORCHESTRATOR_DESIGN.md`: Architecture brainstorming for agentic orchestration.
   - `DOC_INDEX.md`: This file.
   - `ROADMAP.md`: Project roadmap and status.
 - `input_data/`: Directory for input PDF files to be processed.
