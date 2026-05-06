@@ -1,6 +1,5 @@
 input_data/
 processing_data/
-output_data/
 .venv/
 .vscode/
 tmp/

@@ -31,19 +31,22 @@ After completing a skill, perform both of these steps using the **examples folde
   | **Edge coverage** | Does it demonstrate interesting edge cases or fallback logic? |
   | **Clarity** | Is it well-formatted and easy to follow as a reference? |
 
-### 3. Keep Only the Best Example
+### 3. Curation and Retention
 
-- Compare all example files (including the one you just created) and **select the single best one** — the one that is most complete, correct, and instructive.
-- **Delete all other example files** from the examples folder.
-- The surviving example should serve as the **gold-standard reference** for anyone reading this skill.
+- Compare the new run against existing examples.
+- **Bias toward retention:** Do NOT replace an existing example unless the new one is **significantly superior** (better formatting, more complex data, or clearer logic).
+- **Diversity of Examples:** You may keep up to **3 high-quality examples** in the folder IF they demonstrate fundamentally different scenarios (e.g., a simple case vs. a complex ADR case vs. a case with significant non-GAAP adjustments).
+- **Delete redundant or inferior examples** to keep the folder lean and high-signal.
+- The surviving examples should serve as the **gold-standard reference** for the skill.
 
 > ⚠️ **Rules for example curation:**
 >
-> - There must be **exactly 1 example file** in the folder after curation
-> - NEVER keep a partial or broken example over a complete one
-> - If the new run's output is worse than the existing example, keep the old one and delete the new one
-> - If no existing example has all required fields, the new run's output wins by default
-> - The surviving file must be renamed to `TICKER_example.md` format if not already
+> - Maintain **at least 1 and at most 3** example files in the folder.
+> - **Replacement Bar:** Only replace an existing example if the new one covers the same scenario but with 100% accuracy and better clarity.
+> - **Scenario Coverage:** Prioritize examples that cover different "Document Types" or complex accounting treatments (e.g., currency translations).
+> - NEVER keep a partial or broken example over a complete one.
+> - If the new run adds no new signal or clarity compared to existing ones, **delete the new run's file.**
+> - Surviving files must follow the `TICKER_example.md` naming convention.
 
 ---
 

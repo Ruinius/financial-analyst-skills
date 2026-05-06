@@ -92,20 +92,20 @@
 | Risk-Free Rate | 4.20% |
 | Equity Risk Premium | 5.00% |
 | Country Risk Premium | 0.00% |
-| Raw Levered Beta | 1.532 |
-| Unlevered Beta | 1.3547 |
-| Adjusted Beta (Blume's) | 1.3547 |
-| Cost of Equity | 10.97% |
-| Total Debt | $6228M |
+| Raw Levered Beta | 1.417 |
+| Unlevered Beta | 1.3557 |
+| Adjusted Beta (Blume's) | 1.2780 |
+| Cost of Equity | 10.59% |
+| Total Debt | $6,228M |
 | Interest Expense (Ann.) | $252M |
 | Cost of Debt | 4.05% |
-| Market Cap | $101,937,411,247 |
-| Weight of Equity | 94.24% |
-| Weight of Debt | 5.76% |
+| Market Cap | $103,321,602,026 |
+| Weight of Equity | 94.31% |
+| Weight of Debt | 5.69% |
 | Tax Rate (Statutory) | 25.00% |
-| Calculated WACC | 10.52% |
-| **WACC (Bounded)** | **10.52%** |
-| Calculation Date | 2026-03-20 |
+| Calculated WACC | 10.16% |
+| **WACC (Bounded)** | **10.16%** |
+| Calculation Date | 2026-05-05 |
 
 ## DCF Assumptions
 
@@ -118,10 +118,10 @@
 | Parameter | Value |
 |-----------|-------|
 | Adjusted Tax Rate | 18.93% |
-| WACC | 10.52% |
+| WACC | 10.16% |
 | Base Revenue (Annualized) | $24,453M |
 | Base Invested Capital | $-1,976M |
-| Calculation Date | 2026-03-20 |
+| Calculation Date | 2026-05-05 |
 
 ### Assumption Rationale
 
@@ -140,31 +140,33 @@
 | EBITA | 9,322 | 10,437 | 11,663 | 13,009 | 14,481 | 16,090 | 17,506 | 18,836 | 20,042 | 21,084 | 21,927 | 22,804 |
 | NOPAT | 7,557 | 8,461 | 9,455 | 10,546 | 11,740 | 13,044 | 14,192 | 15,270 | 16,247 | 17,092 | 17,776 | 18,487 |
 | FCF | -- | 8,435 | 9,426 | 10,515 | 11,706 | 13,007 | 14,156 | 15,237 | 16,217 | 17,066 | 17,755 | 18,465 |
-| PV of FCF | -- | 7,632 | 7,718 | 7,790 | 7,847 | 7,890 | 7,769 | 7,567 | 7,287 | 6,939 | 6,532 | 104,254 |
+| PV of FCF | -- | 7,657 | 7,768 | 7,865 | 7,949 | 8,018 | 7,921 | 7,740 | 7,478 | 7,143 | 6,746 | 113,889 |
 
 ### Valuation
 
 | Field | Value |
 |-------|-------|
-| Sum of PV (Years 1-10) | $74,971M |
-| PV of Terminal Value | $104,254M |
-| Terminal Value (undiscounted) | $283,371M |
-| **Enterprise Value** | **$179,226M** |
-| TV as % of EV | 58.2% |
-| Calculation Date | 2026-03-20 |
+| Sum of PV (Years 1-10) | $76,285M |
+| PV of Terminal Value | $113,889M |
+| Terminal Value (undiscounted) | $299,736M |
+| **Enterprise Value** | **$190,173M** |
+| TV as % of EV | 59.9% |
+| Calculation Date | 2026-05-05 |
 
 ## Intrinsic Value
 
 | Field | Value |
 |-------|-------|
-| Enterprise Value | $179,226M |
+| Enterprise Value | $190,173M |
 | (+) Cash and Equivalents | $6,890M |
 | (-) Total Debt | $6,228M |
-| **Equity Value** | **$179,888M** |
-| Diluted Shares Outstanding | 408M |
-| **Intrinsic Value Per Share** | **$441.29** |
+| **Equity Value** | **$190,835M** |
+| Diluted Shares Outstanding | 411M |
+| **Intrinsic Value Per Share** | **$464.32** |
 | Currency | USD |
-| Current Market Price | $248.32 |
-| **Upside/Downside** | **+77.7%** |
-| Calculation Date | 2026-03-20 |
+| FX Rate Applied | 1.0000 |
+| ADR Ratio Applied | 1.0 |
+| Current Market Price | $255.62 |
+| **Upside/Downside** | **+81.6%** |
+| Calculation Date | 2026-05-05 |
 

@@ -32,6 +32,8 @@ Phase 1 (Classify) ─────┤
 - **Financial reports** (earnings_announcement, quarterly_filing, annual_filing): Phases 1 → 2 → 3 → 4
 - **Qualitative documents** (analyst_report, transcript, press_release): Phases 1 → 5
 
+> 💡 **Note:** `earnings_announcement` documents often contain significant qualitative commentary and forward-looking guidance. If an EA is the only document available for a ticker, it should also be routed through **Phase 5** to ensure the financial model (Phase 6) has qualitative inputs.
+
 After all documents are processed, the **company-level skills** can run:
 
 - **Phase 6**: Financial Modeling (requires historical data from Phase 4 + qualitative assessments from Phase 5)
@@ -140,7 +142,7 @@ WHILE PDFs remain in input_data/:
        Execute Phase 2 (Extraction)
        Execute Phase 3 (Calculations)
        Execute Phase 4 (Organization)
-  4. ELSE IF document_type is qualitative (analyst_report, transcript, press_release):
+  4. ELSE IF document_type is qualitative (analyst_report, transcript, press_release) OR is an EA being used for qualitative insights:
        Execute Phase 5 (Qualitative Assessment)
   5. Confirm PDF is successfully moved to output_data/. Proceed to next.
 

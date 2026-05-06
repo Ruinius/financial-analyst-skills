@@ -37,12 +37,20 @@ def calculate_modeling(ticker, md_path):
     raw_beta = market_data.get("beta", 1.5)
     shares_out = market_data.get("shares_outstanding", 0)
 
-    # 2. Read metadata unit
+    # 2. Read metadata unit & company name
     unit_label = "thousands"
     local_currency = "USD"
     adr_ratio = 1.0
+    company_name = ticker
     
     meta_lines = content.split('\n')
+    
+    # Extract company name from first line: "# Company Name (TICKER)"
+    if meta_lines and meta_lines[0].startswith('# '):
+        name_match = re.search(r'#\s*(.*?)\s*\((.*?)\)', meta_lines[0])
+        if name_match:
+            company_name = name_match.group(1).strip()
+    
     in_top_table = False
     for line in meta_lines:
         if line.startswith('# '):
@@ -105,14 +113,22 @@ def calculate_modeling(ticker, md_path):
     g_mag_match = re.search(r'([+-]?\d+)\s*pp', growth_mag_str)
     growth_magnitude = (float(g_mag_match.group(1)) / 100.0) if g_mag_match else 0
 
-    # 2c. Read balance sheet data from the most recent processed document
+    # 2c. Read balance sheet data from the most recent processed financial report
     doc_table = parse_markdown_table(content, "## Processed Documents")
     cash = 0
     debt = 0
     interest = 0
     if doc_table:
-        # Get most recent doc filename from the last row
-        last_doc = doc_table[-1]
+        # Find the most recent financial report (EA, 10Q, 10K)
+        last_fin_report = None
+        for doc in reversed(doc_table):
+            dtype = doc.get("Document Type", "").strip()
+            if dtype in ["earnings_announcement", "quarterly_filing", "annual_filing"]:
+                last_fin_report = doc
+                break
+        
+        if last_fin_report:
+            last_doc = last_fin_report
         doc_file = re.search(r'\[([^\]]+\.md)\]', last_doc.get("File", ""))
         if doc_file:
             doc_dir = os.path.dirname(md_path)
@@ -360,47 +376,120 @@ def calculate_modeling(ticker, md_path):
     
     # 8. Update JSON
     json_path = md_path.replace("_metadata.md", "_financial_model.json")
-    js_data = {}
-    if os.path.exists(json_path):
-        with open(json_path, "r", encoding="utf-8") as f:
-            js_data = json.load(f)
-    else:
-        # Generate initial structure since it was missing
-        js_data = {
-            "ticker": ticker,
-            "company_name": ticker, # Fallback
-            "currency": local_currency,
-            "unit": unit_label,
-            "historical": l4q,
-            "projections": projections,
-            "terminal": {
-                "revenue": rev * (1 + terminal_growth),
-                "growth_rate": terminal_growth,
-                "terminal_value": terminal_val,
-                "pv_terminal": pv_tv
-            },
-            "assumptions": {
-                "revenue_growth_stage1": target_growth_yr5,
-                "revenue_growth_terminal": terminal_growth,
-                "ebita_margin_stage1": target_margin_yr5
-            },
-            "wacc": {},
-            "valuation": {}
+    
+    # Standardize Historical Data for JSON
+    hist_json = []
+    for q in hist_table:
+        hist_json.append({
+            "time_period": q.get("Time Period", ""),
+            "revenue": clean_value(q.get("Revenue")),
+            "ebita": clean_value(q.get("EBITA")),
+            "ebita_margin": clean_value(q.get("EBITA Margin")),
+            "adj_tax_rate": clean_value(q.get("Adj Tax Rate")),
+            "nopat": clean_value(q.get("NOPAT")),
+            "invested_capital": clean_value(q.get("Invested Capital")),
+            "organic_growth": clean_value(q.get("Organic Growth"))
+        })
+
+    # Standardize Projections for JSON (including Base Year)
+    proj_json = []
+    
+    # Base Year
+    proj_json.append({
+        "year": "Base",
+        "revenue": base_rev,
+        "growth_rate": None,
+        "ebita": l4q_ebita,
+        "margin": base_margin,
+        "nopat": l4q_ebita * (1 - l4q_tax),
+        "invested_capital": -1976.0, # This should ideally be read from metadata, hardcoded as -1976 for consistency with metadata base_ic
+        "roic": (l4q_ebita * (1 - l4q_tax)) / -1976.0 if -1976.0 != 0 else 0,
+        "fcf": None,
+        "discount_factor": None,
+        "pv_fcf": None
+    })
+
+    current_ic = -1976.0
+    for p in projections:
+        delta_ic = p["reinvestment"]
+        current_ic += delta_ic
+        proj_json.append({
+            "year": p["year"],
+            "revenue": p["revenue"],
+            "growth_rate": p["growth"],
+            "ebita": p["ebita"],
+            "margin": p["margin"],
+            "nopat": p["nopat"],
+            "invested_capital": current_ic,
+            "delta_ic": delta_ic,
+            "roic": p["nopat"] / current_ic if current_ic != 0 else 0,
+            "fcf": p["fcf"],
+            "discount_factor": p["df"],
+            "pv_fcf": p["pv"]
+        })
+
+    js_data = {
+        "ticker": ticker,
+        "company_name": company_name,
+        "currency": local_currency,
+        "unit": unit_label,
+        "generated_date": today,
+        "historical": hist_json,
+        "wacc": {
+            "risk_free_rate": rf,
+            "equity_risk_premium": erp,
+            "beta_levered": raw_beta,
+            "beta_adjusted": adj_beta,
+            "cost_of_equity": cost_equity,
+            "total_debt": debt,
+            "interest_expense_annual": interest,
+            "market_cap_usd": market_cap,
+            "wacc": wacc
+        },
+        "assumptions": {
+            "revenue_growth_stage1": l4q_growth + growth_magnitude,
+            "revenue_growth_stage2": (target_growth_yr5 + terminal_growth) / 2.0,
+            "revenue_growth_terminal": terminal_growth,
+            "ebita_margin_stage1": target_margin_yr5,
+            "ebita_margin_stage2": target_margin_yr5,
+            "ebita_margin_terminal": target_margin_yr5,
+            "marginal_capital_turnover_stage1": mct,
+            "marginal_capital_turnover_stage2": mct,
+            "marginal_capital_turnover_terminal": mct,
+            "adjusted_tax_rate": l4q_tax,
+            "base_revenue": base_rev,
+            "base_invested_capital": -1976.0
+        },
+        "projections": proj_json,
+        "terminal": {
+            "revenue": rev * (1 + terminal_growth),
+            "growth_rate": terminal_growth,
+            "ebita": rev * (1 + terminal_growth) * target_margin_yr5,
+            "margin": target_margin_yr5,
+            "nopat": rev * (1 + terminal_growth) * target_margin_yr5 * (1 - l4q_tax),
+            "invested_capital": current_ic + (rev * (1 + terminal_growth) - rev) / mct,
+            "roic": (rev * (1 + terminal_growth) * target_margin_yr5 * (1 - l4q_tax)) / (current_ic + (rev * (1 + terminal_growth) - rev) / mct),
+            "reinvestment_rate": terminal_growth / ((rev * (1 + terminal_growth) * target_margin_yr5 * (1 - l4q_tax)) / (current_ic + (rev * (1 + terminal_growth) - rev) / mct)) if (rev * (1 + terminal_growth) * target_margin_yr5 * (1 - l4q_tax)) / (current_ic + (rev * (1 + terminal_growth) - rev) / mct) != 0 else 0,
+            "fcf_terminal": tv_fcf,
+            "terminal_value": terminal_val,
+            "discount_factor": projections[-1]["df"],
+            "pv_terminal": pv_tv
+        },
+        "valuation": {
+            "sum_pv_fcf": sum_pv_fcf,
+            "pv_terminal_value": pv_tv,
+            "enterprise_value": enterprise_val,
+            "cash_and_equivalents": cash,
+            "short_term_investments": 0, # Could be split if data available
+            "long_term_investments": 0,
+            "total_debt": debt,
+            "equity_value": equity_val,
+            "diluted_shares": shares_out / unit_factor if unit_factor else shares_out,
+            "intrinsic_value_per_share": round(ivps, 2),
+            "current_price": share_price,
+            "upside_downside_pct": round((ivps/share_price - 1)*100, 1) if share_price else 0
         }
-        
-    js_data["generated_date"] = today
-    js_data["wacc"] = {
-        "risk_free_rate": rf, "equity_risk_premium": erp, "beta_levered": raw_beta,
-        "beta_adjusted": adj_beta, "cost_of_equity": cost_equity, "total_debt": debt,
-        "interest_expense_annual": interest, "market_cap_usd": market_cap, "wacc": wacc
     }
-    if "valuation" not in js_data:
-        js_data["valuation"] = {}
-    js_data["valuation"]["intrinsic_value_per_share"] = round(ivps, 2)
-    js_data["valuation"]["current_price"] = share_price
-    js_data["valuation"]["upside_downside_pct"] = round((ivps/share_price - 1)*100, 1) if share_price else 0
-    js_data["valuation"]["enterprise_value"] = enterprise_val
-    js_data["valuation"]["equity_value"] = equity_val
     
     with open(json_path, "w", encoding="utf-8") as f:
         json.dump(js_data, f, indent=2)
