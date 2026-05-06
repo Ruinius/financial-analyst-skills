@@ -37,6 +37,7 @@ Phase 1 (Classify) ─────┤
 After all documents are processed, the **company-level skills** can run:
 
 - **Phase 6**: Financial Modeling (requires historical data from Phase 4 + qualitative assessments from Phase 5)
+- **Phase 7**: Model JSON Generator (formats the metadata into structured JSON for frontend)
 
 ---
 
@@ -123,10 +124,21 @@ For documents classified as analyst reports, transcripts, or press releases. The
 
 **Skill Reference:** `skills/financial_modeling/SKILL.md`
 
-This is a **company-level** deterministic Python script. It runs once per ticker after sufficient historical data and qualitative assessments are available. The script executes the complete sequence in a single pass: WACC → Assumptions → DCF → Intrinsic Value → JSON Export.
+This is a **company-level** deterministic Python script. It runs once per ticker after sufficient historical data and qualitative assessments are available. The script executes the complete sequence in a single pass: WACC → Assumptions → DCF → Intrinsic Value.
 
 1. Execute the script: `python skills/financial_modeling/scripts/calculate.py {TICKER} output_data/{TICKER}/{TICKER}_metadata.md`
 2. Verify it threw no errors.
+
+---
+
+## Phase 7: Model JSON Generator
+
+**Skill Reference:** `skills/model_json_generator/SKILL.md`
+
+This skill parses the completely generated metadata markdown file and converts the financial model tables into a clean JSON output for the frontend interactive viewer.
+
+1. Execute the script: `python skills/model_json_generator/scripts/generate_json.py {TICKER} output_data/{TICKER}/{TICKER}_metadata.md`
+2. Verify it successfully output the `TICKER_financial_model.json` file.
 
 ---
 
@@ -149,6 +161,7 @@ WHILE PDFs remain in input_data/:
 AFTER all documents processed:
   FOR EACH ticker with sufficient data:
     Execute Phase 6 (Financial Modeling)
+    Execute Phase 7 (Model JSON Generator)
 ```
 
 

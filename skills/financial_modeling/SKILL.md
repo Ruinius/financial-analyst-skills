@@ -1,11 +1,11 @@
 ---
 name: Financial Modeling
-description: Execute a single deterministic Python script to compute WACC, DCF assumptions, projected free cash flows, enterprise value, and intrinsic value per share. Updates both the metadata markdown and the JSON export for the interactive viewer.
+description: Execute a single deterministic Python script to compute WACC, DCF assumptions, projected free cash flows, enterprise value, and intrinsic value per share. Updates the metadata markdown.
 ---
 
 # Financial Modeling (Phase 6)
 
-All modeling logic is consolidated into a single script that executes the complete sequence: WACC → Assumptions → DCF → Intrinsic Value → JSON Export.
+All modeling logic is consolidated into a single script that executes the complete sequence: WACC → Assumptions → DCF → Intrinsic Value.
 
 1. Execute the script: `python skills/financial_modeling/scripts/calculate.py {TICKER} {TICKER_metadata_path}`
 2. Verify it threw no errors.
@@ -23,7 +23,6 @@ All modeling logic is consolidated into a single script that executes the comple
 | 7 | Compute Intrinsic Value | Equity bridge: EV + Cash - Debt → Per Share |
 | 7b | FX & ADR Conversion | If reporting currency != USD, convert IVPS to USD. Apply ADR ratio to share count if applicable |
 | 8 | Update Metadata | Replaces WACC, Assumptions, DCF Model, and Intrinsic Value sections in markdown |
-| 9 | Update JSON Export | Patches `TICKER_financial_model.json` for the interactive viewer |
 
 ## Prerequisites
 

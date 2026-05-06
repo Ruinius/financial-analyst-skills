@@ -40,9 +40,15 @@
     },
     {
       "name": "Financial Modeling",
-      "description": "A single deterministic Python script that computes WACC (via CAPM), generates three-stage DCF assumptions from historical trends and qualitative outlook, projects 10 years of free cash flow, calculates terminal and enterprise value, derives intrinsic value per share, and exports the full model to JSON for the interactive viewer.",
+      "description": "A single deterministic Python script that computes WACC (via CAPM), generates three-stage DCF assumptions from historical trends and qualitative outlook, projects 10 years of free cash flow, calculates terminal and enterprise value, and derives intrinsic value per share.",
       "path": "financial_modeling/SKILL.md",
       "directory": "financial_modeling"
+    },
+    {
+      "name": "Model JSON Generator",
+      "description": "Parses the generated financial modeling data from the metadata markdown and formats it into a structured JSON file for the interactive DCF viewer.",
+      "path": "model_json_generator/SKILL.md",
+      "directory": "model_json_generator"
     }
   ]
 }
