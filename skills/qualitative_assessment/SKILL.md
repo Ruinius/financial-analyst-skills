@@ -201,3 +201,7 @@ If no qualitative assessment exists, the assumptions skill defaults to **Narrow 
 
 Based on `extract_qualitative_assessment()` in `tiger-cafe/app/app_agents/qualitative_extractor.py`, adapted from LLM-only assessment to document-grounded analysis.
 
+## Changelog
+
+- 2026-05-06: Processed first FISV analyst report. Added FISV example and improved guidance on handling the first document for a new ticker.
+

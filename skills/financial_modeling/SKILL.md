@@ -43,3 +43,7 @@ All modeling logic is consolidated into a single script that executes the comple
 | WACC Bounds | Floor 6%, Cap 15% | — |
 | FX Rate | market_data.py if Currency != USD | 1.0 |
 | ADR Ratio | Parsed from metadata header | 1.0 |
+ 
+## Changelog
+ 
+- 2026-05-06: Fixed crash when Yahoo Finance returns `null` for beta. Added explicit checks for `share_price`, `market_cap`, and `shares_outstanding`.

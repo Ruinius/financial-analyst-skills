@@ -4,3 +4,4 @@ processing_data/
 .vscode/
 tmp/
 tools/model
+*.pdf

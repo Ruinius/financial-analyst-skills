@@ -32,10 +32,11 @@ def calculate_modeling(ticker, md_path):
         print(f"Error parsing market data JSON: {e}")
         return
 
-    share_price = market_data.get("share_price", 0)
-    market_cap = market_data.get("market_cap", 0)
-    raw_beta = market_data.get("beta", 1.5)
-    shares_out = market_data.get("shares_outstanding", 0)
+    share_price = market_data.get("share_price") or 0
+    market_cap = market_data.get("market_cap") or 0
+    raw_beta = market_data.get("beta")
+    if raw_beta is None: raw_beta = 1.0
+    shares_out = market_data.get("shares_outstanding") or 0
 
     # 2. Read metadata unit & company name
     unit_label = "thousands"

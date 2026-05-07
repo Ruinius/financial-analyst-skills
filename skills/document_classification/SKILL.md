@@ -95,10 +95,12 @@ Run the python orchestration script to validate and finalize the classification.
 Execute the following terminal command with the correctly formatted strings from Steps 3 and 4:
 
 ```bash
-venv\Scripts\activate ; python skills\document_classification\scripts\process_classification.py --filename "FILENAME.pdf" --company_name "Extracted Company Name" --ticker "TICKER" --document_type "document_type" --document_date "YYYY-MM-DD" --time_period "time_period" --period_end_date "YYYY-MM-DD" --confidence "high"
+uv run python skills\document_classification\scripts\process_classification.py --filename "FILENAME.pdf" --company_name "Extracted Company Name" --ticker "TICKER" --document_type "document_type" --document_date "YYYY-MM-DD" --time_period "time_period" --period_end_date "YYYY-MM-DD" --confidence "high"
 ```
 
 If it succeeds, output the success to the user. If there are more PDFs remaining in `input_data/`, return to **Step 1** for the next file. Otherwise, print a final summary of all processed documents and finish the run.
+
+> 💡 **First-File Scenario:** If the document is the first one being processed for a ticker (no `output_data/TICKER` exists), Phase 5 (Qualitative Assessment) will require you to manually initialize the ticker directory and `TICKER_metadata.md` file.
 
 ### Step 6: Reflection — Use LLM Knowledge (Fallback)
 
@@ -116,3 +118,7 @@ If the script in Step 5 throws an error (e.g. invalid ticker):
 - If classification fails → Retry once, then inform user
 - If ticker validation completely fails → Ask human user for the correct ticker
 - If date extraction fails → Set failed fields to null, proceed with available data
+
+## Changelog
+
+- 2026-05-06: Updated example command to use `uv run` per project standards. Added note about first-file initialization for qualitative documents.
