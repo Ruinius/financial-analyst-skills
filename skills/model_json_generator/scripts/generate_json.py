@@ -12,6 +12,46 @@ def clean_value(val_str):
     s = str(val_str).replace('x', '').replace('X', '').replace('M', '').replace('B', '').replace('K', '').replace('$', '').replace(' ', '')
     return base_clean_value(s)
 
+def _parse_dcf_assumptions_kv(content):
+    """Parse the 2-column KV table under ## DCF Assumptions.
+    
+    The DCF Assumptions section contains two tables:
+      1. A stage table (Parameter | Stage 1 | Stage 2 | Terminal)
+      2. A KV table (Parameter | Value) with Base Revenue, Adjusted Tax Rate, etc.
+    
+    parse_kv_table only finds the first table, so this function extracts the
+    text after the first table and re-parses to find the KV table.
+    """
+    lines = content.split('\n')
+    in_section = False
+    first_table_found = False
+    in_first_table = False
+    kv_start = None
+    
+    for i, line in enumerate(lines):
+        if line.startswith('## DCF Assumptions'):
+            in_section = True
+            continue
+        if in_section and (line.startswith('## ') and not line.startswith('### ')):
+            break
+        if in_section and '|' in line and not first_table_found:
+            in_first_table = True
+        if in_section and in_first_table and not line.strip():
+            first_table_found = True
+            in_first_table = False
+            kv_start = i
+            continue
+        if first_table_found and kv_start is not None and '|' in line:
+            # Found the second table; parse from here
+            remaining = '\n'.join(lines[kv_start:])
+            # Use parse_kv_table on a synthetic section so it finds this table
+            synthetic = '## DCF Assumptions KV\n' + remaining
+            return parse_kv_table(synthetic, '## DCF Assumptions KV')
+    
+    # Fallback: try the original approach
+    return parse_kv_table(content, '## DCF Assumptions')
+
+
 def generate_json(ticker, md_path):
     print(f"--- Generating Model JSON for {ticker} ---")
     
@@ -64,7 +104,11 @@ def generate_json(ticker, md_path):
     wacc_kv = parse_kv_table(content, "## WACC")
     
     # Parse DCF Assumptions
-    assump_kv = parse_kv_table(content, "## DCF Assumptions")
+    # The section has TWO tables: a stage table (Parameter/Stage1/Stage2/Terminal)
+    # followed by a KV table (Parameter/Value) with Base Revenue, Tax Rate, etc.
+    # parse_kv_table only finds the first table, so we need to extract the KV
+    # table separately by finding it after the stage table.
+    assump_kv = _parse_dcf_assumptions_kv(content)
     base_ic = clean_value(assump_kv.get("Base Invested Capital", "0"))
     
     # Assumptions table with stages
@@ -183,11 +227,17 @@ def generate_json(ticker, md_path):
             "risk_free_rate": clean_value(wacc_kv.get("Risk-Free Rate", "0")),
             "equity_risk_premium": clean_value(wacc_kv.get("Equity Risk Premium", "0")),
             "beta_levered": clean_value(wacc_kv.get("Raw Levered Beta", "0")),
+            "beta_unlevered": clean_value(wacc_kv.get("Unlevered Beta", "0")),
             "beta_adjusted": clean_value(wacc_kv.get("Adjusted Beta (Blume's)", "0")),
             "cost_of_equity": clean_value(wacc_kv.get("Cost of Equity", "0")),
             "total_debt": clean_value(wacc_kv.get("Total Debt", "0")),
             "interest_expense_annual": clean_value(wacc_kv.get("Interest Expense (Ann.)", "0")),
+            "cost_of_debt": clean_value(wacc_kv.get("Cost of Debt", "0")),
             "market_cap_usd": clean_value(wacc_kv.get("Market Cap", "0")),
+            "weight_equity": clean_value(wacc_kv.get("Weight of Equity", "0")),
+            "weight_debt": clean_value(wacc_kv.get("Weight of Debt", "0")),
+            "tax_rate": clean_value(wacc_kv.get("Tax Rate (Statutory)", "0")),
+            "wacc_calculated": clean_value(wacc_kv.get("Calculated WACC", "0")),
             "wacc": clean_value(wacc_kv.get("WACC (Bounded)", "0"))
         },
         "assumptions": {

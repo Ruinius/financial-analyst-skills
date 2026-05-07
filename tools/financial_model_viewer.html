@@ -363,12 +363,24 @@
       // ═══════════════════════════════════════════════════════════════════════════
       async function loadModel() {
         const params = new URLSearchParams(window.location.search);
-        const ticker = params.get("ticker");
+        
+        // Find 'ticker' parameter case-insensitively
+        let ticker = null;
+        for (const [key, value] of params.entries()) {
+          if (key.toLowerCase() === "ticker") {
+            ticker = value;
+            break;
+          }
+        }
+
         if (!ticker) {
           document.getElementById("app").innerHTML =
             '<div class="error">No ticker specified. Use ?ticker=ADBE</div>';
           return;
         }
+
+        // Normalize ticker to uppercase (standard for project folders/files)
+        ticker = ticker.toUpperCase();
 
         try {
           const resp = await fetch(
@@ -380,6 +392,20 @@
 
           // Initialize editable assumptions from model defaults
           assumptions = { ...MODEL.assumptions, wacc: MODEL.wacc.wacc };
+
+          // Fallback: if base_revenue is 0 (generator bug), use Base projection row
+          if (!assumptions.base_revenue && MODEL.projections.length > 0) {
+            assumptions.base_revenue = MODEL.projections[0].revenue || 0;
+          }
+          if (!assumptions.base_invested_capital && MODEL.projections.length > 0) {
+            assumptions.base_invested_capital = MODEL.projections[0].invested_capital || 0;
+          }
+          // Fallback: if adjusted_tax_rate is 0, compute from historical average
+          if (!assumptions.adjusted_tax_rate && MODEL.historical && MODEL.historical.length > 0) {
+            const hist = MODEL.historical;
+            const taxSum = hist.reduce((s, h) => s + (h.adj_tax_rate || 0), 0);
+            assumptions.adjusted_tax_rate = taxSum / hist.length;
+          }
 
           // Load saved scenarios
           try {

@@ -1,0 +1,26 @@
+[
+  {
+    "name": "FISV_base",
+    "date": "2026-05-07",
+    "assumptions": {
+      "revenue_growth_stage1": -0.0275,
+      "revenue_growth_stage2": 0,
+      "revenue_growth_terminal": 0,
+      "ebita_margin_stage1": 0.32,
+      "ebita_margin_stage2": 0.32,
+      "ebita_margin_terminal": 0.32,
+      "marginal_capital_turnover_stage1": 100,
+      "marginal_capital_turnover_stage2": 100,
+      "marginal_capital_turnover_terminal": 100,
+      "adjusted_tax_rate": 0.2,
+      "base_revenue": 21090,
+      "base_invested_capital": -1976,
+      "wacc": 0.08
+    },
+    "iv_per_share": 68.6,
+    "enterprise_value": 65053,
+    "equity_value": 36700,
+    "current_price": 56.11,
+    "upside_pct": 22.3
+  }
+]

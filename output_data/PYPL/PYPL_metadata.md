@@ -1,35 +1,35 @@
 # PayPal Holdings, Inc. (PYPL)
 
-| Field | Value |
-|-------|-------|
-| Ticker | PYPL |
+| Field        | Value                 |
+| ------------ | --------------------- |
+| Ticker       | PYPL                  |
 | Company Name | PayPal Holdings, Inc. |
-| Currency | USD |
-| Unit | millions |
-| Last Updated | 2026-05-05 |
+| Currency     | USD                   |
+| Unit         | millions              |
+| Last Updated | 2026-05-05            |
 
 ---
 
 ## Processed Documents
 
-| # | File | Document Type | Time Period | Period End Date | Document Date | Processed |
-|---|------|--------------|-------------|-----------------|---------------|-----------|
-| 1 |[PYPL_EA_20250729.md](PYPL_EA_20250729.md)|earnings_announcement|Q2 2025|2025-06-30|2025-07-29|2026-05-05|
-| 2 |[PYPL_EA_20251028.md](PYPL_EA_20251028.md)|earnings_announcement|Q3 2025|2025-09-30|2025-10-28|2026-05-05|
-| 3 |[PYPL_EA_20260203.md](PYPL_EA_20260203.md)|earnings_announcement|Q4 2025|2025-12-31|2026-02-03|2026-05-05|
-| 4 |[PYPL_EA_20260505.md](PYPL_EA_20260505.md)|earnings_announcement|Q1 2026|2026-03-31|2026-05-05|2026-05-05|
-| 5 |[PYPL_AR_20260505.md](PYPL_AR_20260505.md)|analyst_report|Q1 2026|2026-03-31|2026-05-05|2026-05-06|
+| #   | File                                       | Document Type         | Time Period | Period End Date | Document Date | Processed  |
+| --- | ------------------------------------------ | --------------------- | ----------- | --------------- | ------------- | ---------- |
+| 1   | [PYPL_EA_20250729.md](PYPL_EA_20250729.md) | earnings_announcement | Q2 2025     | 2025-06-30      | 2025-07-29    | 2026-05-05 |
+| 2   | [PYPL_EA_20251028.md](PYPL_EA_20251028.md) | earnings_announcement | Q3 2025     | 2025-09-30      | 2025-10-28    | 2026-05-05 |
+| 3   | [PYPL_EA_20260203.md](PYPL_EA_20260203.md) | earnings_announcement | Q4 2025     | 2025-12-31      | 2026-02-03    | 2026-05-05 |
+| 4   | [PYPL_EA_20260505.md](PYPL_EA_20260505.md) | earnings_announcement | Q1 2026     | 2026-03-31      | 2026-05-05    | 2026-05-05 |
+| 5   | [PYPL_AR_20260505.md](PYPL_AR_20260505.md) | analyst_report        | Q1 2026     | 2026-03-31      | 2026-05-05    | 2026-05-06 |
 
 ---
 
 ## Financial History
 
-| Time Period | Period End | Revenue | EBITA | EBITA Margin | Adj Tax Rate | NOPAT | Invested Capital | ROIC | Organic Growth |
-|-------------|-----------|---------|-------|--------------|-------------|-------|-----------------|------|----------------|
-| Q2 2025 | 2025-06-30 | 8,288 | 2,096 | 25.29% | 5.73% | 1,976 | 9,827 | 80.43% | 5.00% |
-| Q3 2025 | 2025-09-30 | 8,417 | 2,120 | 25.19% | 6.92% | 1,973.2 | 9,354 | 84.38% | 6.00% |
-| Q4 2025 | 2025-12-31 | 8,676 | 2,002 | 23.08% | 12.46% | 1,752.5 | 7,906 | 88.67% | 3.00% |
-| Q1 2026 | 2026-03-31 | 8,353 | 1,993 | 23.86% | 8.12% | 1,831.2 | 8,290 | 88.36% | 5.00% |
+| Time Period | Period End | Revenue | EBITA | EBITA Margin | Adj Tax Rate | NOPAT   | Invested Capital | ROIC   | Organic Growth |
+| ----------- | ---------- | ------- | ----- | ------------ | ------------ | ------- | ---------------- | ------ | -------------- |
+| Q2 2025     | 2025-06-30 | 8,288   | 2,096 | 25.29%       | 5.73%        | 1,976   | 9,827            | 80.43% | 5.00%          |
+| Q3 2025     | 2025-09-30 | 8,417   | 2,120 | 25.19%       | 6.92%        | 1,973.2 | 9,354            | 84.38% | 6.00%          |
+| Q4 2025     | 2025-12-31 | 8,676   | 2,002 | 23.08%       | 12.46%       | 1,752.5 | 7,906            | 88.67% | 3.00%          |
+| Q1 2026     | 2026-03-31 | 8,353   | 1,993 | 23.86%       | 8.12%        | 1,831.2 | 8,290            | 88.36% | 5.00%          |
 
 ---
 
@@ -39,10 +39,10 @@ _Last updated: 2026-05-06 | Source: Morningstar Equity Analyst Report (2026-05-0
 
 ### Economic Moat
 
-| Field      | Value                  |
-| ---------- | ---------------------- |
-| Rating     | **Narrow**             |
-| Confidence | High                   |
+| Field      | Value                                     |
+| ---------- | ----------------------------------------- |
+| Rating     | **Narrow**                                |
+| Confidence | High                                      |
 | Source     | Morningstar (2026-05-05), EA (2026-02-03) |
 
 1. **Network Effects**: PayPal maintains a massive two-sided network with 439 million active accounts. Quarterly volume of ~$0.5T ($475B in Q4'25) drives high merchant conversion (~90%).
@@ -52,11 +52,11 @@ _Last updated: 2026-05-06 | Source: Morningstar Equity Analyst Report (2026-05-0
 
 ### EBITA Margin Outlook
 
-| Field      | Value                      |
-| ---------- | -------------------------- |
-| Direction  | **Shrink**                 |
-| Magnitude  | -2.0 pp over 5 years       |
-| Confidence | High                       |
+| Field      | Value                |
+| ---------- | -------------------- |
+| Direction  | **Shrink**           |
+| Magnitude  | -2.0 pp over 5 years |
+| Confidence | High                 |
 
 1. **Increased Investment**: 2026 guidance forecasts EPS pressure from strategic reinvestment into platform experience, presentment, and consumer selection.
 2. **Mix Shift & Interest Rates**: Loss of high-margin eBay volume and transition to lower-margin unbranded processing (Braintree) is compounded by interest rate headwinds cited in 2026 outlook.
@@ -64,16 +64,15 @@ _Last updated: 2026-05-06 | Source: Morningstar Equity Analyst Report (2026-05-0
 
 ### Organic Growth Outlook
 
-| Field      | Value                          |
-| ---------- | ------------------------------ |
-| Direction  | **Stable**                     |
-| Magnitude  | +0.0 pp over 5 years           |
-| Confidence | High                           |
+| Field      | Value                |
+| ---------- | -------------------- |
+| Direction  | **Stable**           |
+| Magnitude  | +0.0 pp over 5 years |
+| Confidence | High                 |
 
 1. **Secular Tailwinds**: Continued transition from cash/physical payments to electronic payments provides a steady baseline for transaction volume growth (TPV +9% in Q4'25).
 2. **E-commerce Growth**: Morningstar expects a 5% revenue CAGR, while PayPal's TPV growth outstripping revenue (9% vs 4%) suggests volume resilience despite take-rate pressure.
 3. **New Growth Levers**: Adoption of mobile-based solutions and new initiatives in advertising provide potential long-term growth offsets to core market saturation.
-
 
 ## WACC
 
@@ -83,19 +82,19 @@ _Last updated: 2026-05-06 | Source: Morningstar Equity Analyst Report (2026-05-0
 | Equity Risk Premium | 5.00% |
 | Country Risk Premium | 0.00% |
 | Raw Levered Beta | 1.395 |
-| Unlevered Beta | 1.1936 |
-| Adjusted Beta (Blume's) | 1.2633 |
-| Cost of Equity | 10.52% |
+| Unlevered Beta | 1.1894 |
+| Adjusted Beta (Blume's) | 1.3210 |
+| Cost of Equity | 10.80% |
 | Total Debt | $9,409M |
 | Interest Expense (Ann.) | $0M |
-| Cost of Debt | 0.00% |
-| Market Cap | $41,825,844,421 |
-| Weight of Equity | 81.64% |
-| Weight of Debt | 18.36% |
+| Cost of Debt | 5.00% |
+| Market Cap | $40,815,021,564 |
+| Weight of Equity | 81.27% |
+| Weight of Debt | 18.73% |
 | Tax Rate (Statutory) | 25.00% |
-| Calculated WACC | 8.59% |
-| **WACC (Bounded)** | **8.59%** |
-| Calculation Date | 2026-05-05 |
+| Calculated WACC | 9.48% |
+| **WACC (Bounded)** | **9.48%** |
+| Calculation Date | 2026-05-06 |
 
 ## DCF Assumptions
 
@@ -108,10 +107,10 @@ _Last updated: 2026-05-06 | Source: Morningstar Equity Analyst Report (2026-05-0
 | Parameter | Value |
 |-----------|-------|
 | Adjusted Tax Rate | 8.31% |
-| WACC | 8.59% |
+| WACC | 9.48% |
 | Base Revenue (Annualized) | $33,734M |
 | Base Invested Capital | $-1,976M |
-| Calculation Date | 2026-05-05 |
+| Calculation Date | 2026-05-06 |
 
 ### Assumption Rationale
 
@@ -130,33 +129,33 @@ _Last updated: 2026-05-06 | Source: Morningstar Equity Analyst Report (2026-05-0
 | EBITA | 8,211 | 8,601 | 9,010 | 9,438 | 9,886 | 10,355 | 10,811 | 11,249 | 11,665 | 12,056 | 12,418 | 12,790 |
 | NOPAT | 7,529 | 7,886 | 8,261 | 8,654 | 9,065 | 9,495 | 9,913 | 10,314 | 10,696 | 11,054 | 11,386 | 11,728 |
 | FCF | -- | 7,870 | 8,244 | 8,636 | 9,046 | 9,476 | 9,894 | 10,296 | 10,679 | 11,038 | 11,371 | 11,712 |
-| PV of FCF | -- | 7,248 | 6,992 | 6,745 | 6,507 | 6,277 | 6,036 | 5,785 | 5,525 | 5,260 | 4,990 | 92,019 |
+| PV of FCF | -- | 7,189 | 6,878 | 6,581 | 6,296 | 6,024 | 5,745 | 5,461 | 5,173 | 4,884 | 4,595 | 73,009 |
 
 ### Valuation
 
 | Field | Value |
 |-------|-------|
-| Sum of PV (Years 1-10) | $61,365M |
-| PV of Terminal Value | $92,019M |
-| Terminal Value (undiscounted) | $209,696M |
-| **Enterprise Value** | **$153,384M** |
-| TV as % of EV | 60.0% |
-| Calculation Date | 2026-05-05 |
+| Sum of PV (Years 1-10) | $58,826M |
+| PV of Terminal Value | $73,009M |
+| Terminal Value (undiscounted) | $180,656M |
+| **Enterprise Value** | **$131,835M** |
+| TV as % of EV | 55.4% |
+| Calculation Date | 2026-05-06 |
 
 ## Intrinsic Value
 
 | Field | Value |
 |-------|-------|
-| Enterprise Value | $153,384M |
+| Enterprise Value | $131,835M |
 | (+) Cash and Equivalents | $13,467M |
 | (-) Total Debt | $9,409M |
-| **Equity Value** | **$157,442M** |
+| **Equity Value** | **$135,893M** |
 | Diluted Shares Outstanding | 920M |
-| **Intrinsic Value Per Share** | **$171.13** |
+| **Intrinsic Value Per Share** | **$147.71** |
 | Currency | USD |
 | FX Rate Applied | 1.0000 |
 | ADR Ratio Applied | 1.0 |
-| Current Market Price | $46.49 |
-| **Upside/Downside** | **+268.1%** |
-| Calculation Date | 2026-05-05 |
+| Current Market Price | $46.27 |
+| **Upside/Downside** | **+219.2%** |
+| Calculation Date | 2026-05-06 |
 

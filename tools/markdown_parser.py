@@ -28,8 +28,7 @@ def parse_markdown_table(text, table_name=None):
                     rows.append(dict(zip(headers, row_vals)))
         elif in_table and not line.strip():
             in_table = False
-            if table_name:
-                break
+            pass
                 
     return rows
 

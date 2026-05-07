@@ -1,43 +1,49 @@
 # Fiserv Inc (FISV)
 
-| Field | Value |
-|-------|-------|
-| Ticker | FISV |
+| Field        | Value      |
+| ------------ | ---------- |
+| Ticker       | FISV       |
 | Company Name | Fiserv Inc |
-| Currency | USD |
-| Unit | millions |
+| Currency     | USD        |
+| Unit         | millions   |
 | Last Updated | 2026-05-06 |
 
 ---
 
 ## Processed Documents
 
-| # | File | Document Type | Time Period | Period End Date | Document Date | Processed |
-|---|------|--------------|-------------|-----------------|---------------|-----------|
-| 1 |[FISV_AR_20260505.md](FISV_AR_20260505.md)|analyst_report|Q1 2026|2026-03-31|2026-05-05|2026-05-06|
-| 2 |[FISV_EA_20260505.md](FISV_EA_20260505.md)|earnings_announcement|Q1 2026|2026-03-31|2026-05-05|2026-05-06|
+| #   | File                                       | Document Type         | Time Period | Period End Date | Document Date | Processed  |
+| --- | ------------------------------------------ | --------------------- | ----------- | --------------- | ------------- | ---------- |
+| 1   | [FISV_EA_20250723.md](FISV_EA_20250723.md) | earnings_announcement | Q2 2025     | 2025-06-30      | 2025-07-23    | 2026-05-06 |
+| 2   | [FISV_EA_20251029.md](FISV_EA_20251029.md) | earnings_announcement | Q3 2025     | 2025-09-30      | 2025-10-29    | 2026-05-06 |
+| 3   | [FISV_EA_20260210.md](FISV_EA_20260210.md) | earnings_announcement | Q4 2025     | 2025-12-31      | 2026-02-10    | 2026-05-06 |
+| 4   | [FISV_AR_20260505.md](FISV_AR_20260505.md) | analyst_report        | Q1 2026     | 2026-03-31      | 2026-05-05    | 2026-05-06 |
+| 5   | [FISV_EA_20260505.md](FISV_EA_20260505.md) | earnings_announcement | Q1 2026     | 2026-03-31      | 2026-05-05    | 2026-05-06 |
 
 ---
 
 ## Financial History
 
-| Time Period | Period End | Revenue | EBITA | EBITA Margin | Adj Tax Rate | NOPAT | Invested Capital | ROIC | Organic Growth |
-|-------------|-----------|---------|-------|--------------|-------------|-------|-----------------|------|----------------|
-| Q1 2026 | 2026-03-31 | 5,027 | 1,473 | 29.30% | -2.51% | 1,510 | 11,909 | 50.72% | -4.00% |
+| Time Period | Period End | Revenue | EBITA | EBITA Margin | Adj Tax Rate | NOPAT   | Invested Capital | ROIC   | Organic Growth |
+| ----------- | ---------- | ------- | ----- | ------------ | ------------ | ------- | ---------------- | ------ | -------------- |
+| Q2 2025     | 2025-06-30 | 5,516   | 2,051 | 37.18%       | 11.84%       | 1,808.2 | 11,888           | 60.84% | 8.00%          |
+| Q3 2025     | 2025-09-30 | 5,263   | 1,658 | 31.50%       | 11.94%       | 1,460   | 11,743           | 49.73% | 1.00%          |
+| Q4 2025     | 2025-12-31 | 5,284   | 1,712 | 32.40%       | 10.18%       | 1,537.8 | 11,130           | 55.27% | 0.00%          |
+| Q1 2026     | 2026-03-31 | 5,027   | 1,473 | 29.30%       | -2.51%       | 1,510   | 11,909           | 50.72% | -4.00%         |
 
 ---
 
 ## Qualitative Assessment
 
-*Last updated: 2026-05-06 | Source: Morningstar Equity Analyst Report (2026-05-05)*
+_Last updated: 2026-05-06 | Source: Morningstar Equity Analyst Report (2026-05-05)_
 
 ### Economic Moat
 
-| Field | Value |
-|-------|-------|
-| Rating | **Narrow** |
-| Confidence | High |
-| Source | Morningstar (Brett Horn, CFA) |
+| Field      | Value                         |
+| ---------- | ----------------------------- |
+| Rating     | **Narrow**                    |
+| Confidence | High                          |
+| Source     | Morningstar (Brett Horn, CFA) |
 
 1. **Switching Costs (Bank Tech)**: Fiserv’s core processing systems are mission-critical for banks, leading to retention rates near 99% because the risk of operational disruption during a migration is extremely high.
 2. **Cost Advantage (Merchant Acquiring)**: As one of the three volume leaders in the US merchant acquiring market, Fiserv enjoys significant economies of scale that provide a structural cost advantage over smaller peers.
@@ -45,11 +51,11 @@
 
 ### EBITA Margin Outlook
 
-| Field | Value |
-|-------|-------|
-| Direction | **Shrink** |
-| Magnitude | -5.3 pp over 5 years |
-| Confidence | High |
+| Field      | Value                |
+| ---------- | -------------------- |
+| Direction  | **Shrink**           |
+| Magnitude  | -5.3 pp over 5 years |
+| Confidence | High                 |
 
 1. **Strategic Reset**: New management (CEO Michael Lyons) has initiated a "reset," shifting focus from boosting near-term margins to prioritizing long-term investment and product health.
 2. **Revitalization Spend**: The company is implementing a significant step-up in R&D and marketing to address historical underinvestment in its product suite.
@@ -57,11 +63,11 @@
 
 ### Organic Growth Outlook
 
-| Field | Value |
-|-------|-------|
-| Direction | **Decrease** |
-| Magnitude | -2 to -4 pp over 5 years |
-| Confidence | High |
+| Field      | Value                    |
+| ---------- | ------------------------ |
+| Direction  | **Decrease**             |
+| Magnitude  | -2 to -4 pp over 5 years |
+| Confidence | High                     |
 
 1. **Investment Pivot**: The redirection of resources toward internal product revitalization is expected to cause a near-term slowdown in revenue expansion.
 2. **Legacy Underinvestment**: Past management's focus on short-term results has left certain segments less competitive, necessitating a period of slower growth during the rebuild.
@@ -76,39 +82,39 @@
 | Country Risk Premium | 0.00% |
 | Raw Levered Beta | 1.000 |
 | Unlevered Beta | 0.5782 |
-| Adjusted Beta (Blume's) | 1.0000 |
-| Cost of Equity | 9.20% |
+| Adjusted Beta (Blume's) | 1.2431 |
+| Cost of Equity | 10.42% |
 | Total Debt | $29,182M |
-| Interest Expense (Ann.) | $0M |
-| Cost of Debt | 0.00% |
+| Interest Expense (Ann.) | $1,388M |
+| Cost of Debt | 5.00% |
 | Market Cap | $30,006,366,524 |
 | Weight of Equity | 50.70% |
 | Weight of Debt | 49.30% |
 | Tax Rate (Statutory) | 25.00% |
-| Calculated WACC | 4.66% |
-| **WACC (Bounded)** | **6.00%** |
+| Calculated WACC | 7.13% |
+| **WACC (Bounded)** | **7.13%** |
 | Calculation Date | 2026-05-06 |
 
 ## DCF Assumptions
 
 | Parameter | Stage 1 (Yr 1-5) | Stage 2 (Yr 6-10) | Terminal |
 |-----------|-------------------|--------------------|----------|
-| Revenue Growth | -8.00% | 3.00% | 3.00% |
-| EBITA Margin | 32.30% | 32.30% | 32.30% |
+| Revenue Growth | -2.75% | 3.00% | 3.00% |
+| EBITA Margin | 35.69% | 35.69% | 35.69% |
 | Marginal Capital Turnover | 100.0x | 100.0x | 100.0x |
 
 | Parameter | Value |
 |-----------|-------|
-| Adjusted Tax Rate | -2.51% |
-| WACC | 6.00% |
-| Base Revenue (Annualized) | $5,027M |
+| Adjusted Tax Rate | 7.86% |
+| WACC | 7.13% |
+| Base Revenue (Annualized) | $21,090M |
 | Base Invested Capital | $-1,976M |
 | Calculation Date | 2026-05-06 |
 
 ### Assumption Rationale
 
-- **Revenue Growth**: L4Q organic growth averages -4.0%. Qualitative outlook: -4.0 pp, target yr5 -8.0%. Narrow moat supports terminal 3.0%.
-- **EBITA Margin**: L4Q margin 29.3%. Qualitative outlook: +3.0 pp, target yr5 32.3%.
+- **Revenue Growth**: L4Q organic growth averages 1.2%. Qualitative outlook: -4.0 pp, target yr5 -2.8%. Narrow moat supports terminal 3.0%.
+- **EBITA Margin**: L4Q margin 32.7%. Qualitative outlook: +3.0 pp, target yr5 35.7%.
 - **Capital Turnover**: Defaulted to 100.0x due to negative invested capital.
 
 ## DCF Model
@@ -117,37 +123,38 @@
 
 | | Base | Yr 1 | Yr 2 | Yr 3 | Yr 4 | Yr 5 | Yr 6 | Yr 7 | Yr 8 | Yr 9 | Yr 10 | Terminal |
 |---|------|---|---|---|---|---|---|---|---|---|---|----------|
-| Revenue | 5,027 | 4,786 | 4,518 | 4,229 | 3,924 | 3,610 | 3,401 | 3,278 | 3,232 | 3,258 | 3,356 | 3,457 |
-| Growth | -- | -4.80% | -5.60% | -6.40% | -7.20% | -8.00% | -5.80% | -3.60% | -1.40% | 0.80% | 3.00% | 3.00% |
-| EBITA | 1,473 | 1,431 | 1,378 | 1,315 | 1,244 | 1,166 | 1,099 | 1,059 | 1,044 | 1,052 | 1,084 | 1,117 |
-| NOPAT | 1,510 | 1,467 | 1,413 | 1,348 | 1,275 | 1,195 | 1,126 | 1,086 | 1,070 | 1,079 | 1,111 | 1,145 |
-| FCF | -- | 1,469 | 1,415 | 1,351 | 1,278 | 1,199 | 1,128 | 1,087 | 1,071 | 1,079 | 1,110 | 1,144 |
-| PV of FCF | -- | 1,386 | 1,260 | 1,134 | 1,013 | 896 | 795 | 723 | 672 | 638 | 620 | 21,286 |
+| Revenue | 21,090 | 21,185 | 21,111 | 20,868 | 20,461 | 19,898 | 19,580 | 19,492 | 19,628 | 19,991 | 20,591 | 21,209 |
+| Growth | -- | 0.45% | -0.35% | -1.15% | -1.95% | -2.75% | -1.60% | -0.45% | 0.70% | 1.85% | 3.00% | 3.00% |
+| EBITA | 6,894 | 7,052 | 7,154 | 7,197 | 7,179 | 7,101 | 6,988 | 6,956 | 7,005 | 7,135 | 7,349 | 7,569 |
+| NOPAT | 6,352 | 6,498 | 6,592 | 6,631 | 6,615 | 6,543 | 6,438 | 6,409 | 6,454 | 6,574 | 6,771 | 6,974 |
+| FCF | -- | 6,497 | 6,592 | 6,634 | 6,619 | 6,549 | 6,442 | 6,410 | 6,453 | 6,570 | 6,765 | 6,968 |
+| PV of FCF | -- | 6,064 | 5,744 | 5,395 | 5,025 | 4,641 | 4,261 | 3,958 | 3,720 | 3,535 | 3,398 | 84,751 |
 
 ### Valuation
 
 | Field | Value |
 |-------|-------|
-| Sum of PV (Years 1-10) | $9,137M |
-| PV of Terminal Value | $21,286M |
-| Terminal Value (undiscounted) | $38,120M |
-| **Enterprise Value** | **$30,423M** |
-| TV as % of EV | 70.0% |
+| Sum of PV (Years 1-10) | $45,742M |
+| PV of Terminal Value | $84,751M |
+| Terminal Value (undiscounted) | $168,744M |
+| **Enterprise Value** | **$130,494M** |
+| TV as % of EV | 64.9% |
 | Calculation Date | 2026-05-06 |
 
 ## Intrinsic Value
 
 | Field | Value |
 |-------|-------|
-| Enterprise Value | $30,423M |
+| Enterprise Value | $130,494M |
 | (+) Cash and Equivalents | $829M |
 | (-) Total Debt | $29,182M |
-| **Equity Value** | **$2,070M** |
+| **Equity Value** | **$102,141M** |
 | Diluted Shares Outstanding | 535M |
-| **Intrinsic Value Per Share** | **$3.87** |
+| **Intrinsic Value Per Share** | **$190.77** |
 | Currency | USD |
 | FX Rate Applied | 1.0000 |
 | ADR Ratio Applied | 1.0 |
 | Current Market Price | $56.11 |
-| **Upside/Downside** | **-93.1%** |
+| **Upside/Downside** | **+240.0%** |
 | Calculation Date | 2026-05-06 |
+

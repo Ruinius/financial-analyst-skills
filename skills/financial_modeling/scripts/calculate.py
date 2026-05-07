@@ -145,7 +145,9 @@ def calculate_modeling(ticker, md_path):
                 debt_names = ["short_term_debt", "long_term_debt", "current_portion_long_term_debt",
                               "short_term_borrowings", "long_term_borrowings", "notes_payable"]
                 cash_names = ["cash_and_equivalents", "short_term_investments", "long_term_investments"]
+                interest_names = ["interest_expense", "interest_expense_net"]
                 
+                line_item_interest = 0
                 for item in bs_items:
                     std = item.get("Standardized Name", "").strip()
                     val = clean_value(item.get("Value", "0"))
@@ -153,9 +155,14 @@ def calculate_modeling(ticker, md_path):
                         cash += abs(val)
                     if std in debt_names:
                         debt += abs(val)
+                    if std in interest_names:
+                        line_item_interest += abs(val)
                 
-                # Interest expense from financial summary
+                # Interest expense from financial summary or line items
                 int_val = clean_value(fin_summary.get("Interest Expense", "0"))
+                if int_val == 0:
+                    int_val = line_item_interest
+                
                 interest = abs(int_val) * 4  # Annualize quarterly
                 
                 reported_shares = clean_value(fin_summary.get("Diluted Shares Outstanding", "0"))
@@ -181,11 +188,14 @@ def calculate_modeling(ticker, md_path):
     d_to_e = debt_abs / mcap_local if mcap_local > 0 else 0
     unlevered_beta = raw_beta / (1 + (1 - tax_stat) * d_to_e)
     
-    # Blume's adjustment
-    adj_beta = (2/3) * raw_beta + (1/3) * 1.0
+    # Blume's adjustment on Unlevered Beta
+    adj_unlevered_beta = (2/3) * unlevered_beta + (1/3) * 1.0
+    
+    # Re-lever adjusted beta
+    adj_beta = adj_unlevered_beta * (1 + (1 - tax_stat) * d_to_e)
     
     cost_equity = rf + adj_beta * erp
-    cost_debt = (interest / debt) if debt > 0 else 0.05
+    cost_debt = max(0.05, (interest / debt) if debt > 0 else 0.05)
     
     w_e = mcap_local / (mcap_local + debt_abs) if (mcap_local + debt_abs) else 1.0
     w_d = 1.0 - w_e

@@ -3,7 +3,7 @@
   "company_name": "Adobe Inc.",
   "currency": "USD",
   "unit": "millions",
-  "generated_date": "2026-05-05",
+  "generated_date": "2026-05-06",
   "historical": [
     {
       "time_period": "Q1 2024",
@@ -100,12 +100,18 @@
     "risk_free_rate": 0.042,
     "equity_risk_premium": 0.05,
     "beta_levered": 1.417,
-    "beta_adjusted": 1.278,
-    "cost_of_equity": 0.1059,
+    "beta_unlevered": 1.3544,
+    "beta_adjusted": 1.2934,
+    "cost_of_equity": 0.1067,
     "total_debt": 6228.0,
     "interest_expense_annual": 252.0,
-    "market_cap_usd": 103321602026.0,
-    "wacc": 0.1016
+    "cost_of_debt": 0.05,
+    "market_cap_usd": 101118713259.0,
+    "weight_equity": 0.9420000000000001,
+    "weight_debt": 0.057999999999999996,
+    "tax_rate": 0.25,
+    "wacc_calculated": 0.1027,
+    "wacc": 0.1027
   },
   "assumptions": {
     "revenue_growth_stage1": 0.1,
@@ -117,9 +123,9 @@
     "marginal_capital_turnover_stage1": 100.0,
     "marginal_capital_turnover_stage2": 100.0,
     "marginal_capital_turnover_terminal": 100.0,
-    "adjusted_tax_rate": 0.0,
-    "base_revenue": 0.0,
-    "base_invested_capital": 0.0
+    "adjusted_tax_rate": 0.1893,
+    "base_revenue": 24453.0,
+    "base_invested_capital": -1976.0
   },
   "projections": [
     {
@@ -129,9 +135,9 @@
       "ebita": 9322.0,
       "margin": 0.38122111806322334,
       "nopat": 7557.0,
-      "invested_capital": 0.0,
+      "invested_capital": -1976.0,
       "delta_ic": null,
-      "roic": 0,
+      "roic": -3.8243927125506074,
       "fcf": null,
       "discount_factor": null,
       "pv_fcf": null
@@ -143,12 +149,12 @@
       "ebita": 10437.0,
       "margin": 0.38521443862109694,
       "nopat": 8461.0,
-      "invested_capital": 26.0,
+      "invested_capital": -1950.0,
       "delta_ic": 26.0,
-      "roic": 325.4230769230769,
+      "roic": -4.338974358974359,
       "fcf": 8435.0,
-      "discount_factor": 0.9077652637818613,
-      "pv_fcf": 7657.0
+      "discount_factor": 0.9068168346176645,
+      "pv_fcf": 7649.0
     },
     {
       "year": 2,
@@ -157,12 +163,12 @@
       "ebita": 11663.0,
       "margin": 0.38920776880464525,
       "nopat": 9455.0,
-      "invested_capital": 55.0,
+      "invested_capital": -1921.0,
       "delta_ic": 29.0,
-      "roic": 171.9090909090909,
+      "roic": -4.921915668922436,
       "fcf": 9426.0,
-      "discount_factor": 0.8241035433906216,
-      "pv_fcf": 7768.0
+      "discount_factor": 0.8225122002970507,
+      "pv_fcf": 7753.0
     },
     {
       "year": 3,
@@ -171,12 +177,12 @@
       "ebita": 13009.0,
       "margin": 0.393234991838462,
       "nopat": 10546.0,
-      "invested_capital": 86.0,
+      "invested_capital": -1890.0,
       "delta_ic": 31.0,
-      "roic": 122.62790697674419,
+      "roic": -5.57989417989418,
       "fcf": 10515.0,
-      "discount_factor": 0.7479790775083215,
-      "pv_fcf": 7865.0
+      "discount_factor": 0.745886828340466,
+      "pv_fcf": 7843.0
     },
     {
       "year": 4,
@@ -185,12 +191,12 @@
       "ebita": 14481.0,
       "margin": 0.397207669309049,
       "nopat": 11740.0,
-      "invested_capital": 120.0,
+      "invested_capital": -1856.0,
       "delta_ic": 34.0,
-      "roic": 97.83333333333333,
+      "roic": -6.325431034482759,
       "fcf": 11706.0,
-      "discount_factor": 0.6790534768494789,
-      "pv_fcf": 7949.0
+      "discount_factor": 0.6764906885357936,
+      "pv_fcf": 7919.0
     },
     {
       "year": 5,
@@ -199,12 +205,12 @@
       "ebita": 16090.0,
       "margin": 0.4012268714777318,
       "nopat": 13044.0,
-      "invested_capital": 157.0,
+      "invested_capital": -1819.0,
       "delta_ic": 37.0,
-      "roic": 83.0828025477707,
+      "roic": -7.170973062122045,
       "fcf": 13007.0,
-      "discount_factor": 0.6164373029906973,
-      "pv_fcf": 8018.0
+      "discount_factor": 0.6135157991850542,
+      "pv_fcf": 7980.0
     },
     {
       "year": 6,
@@ -213,12 +219,12 @@
       "ebita": 17506.0,
       "margin": 0.4012284843345328,
       "nopat": 14192.0,
-      "invested_capital": 193.0,
+      "invested_capital": -1783.0,
       "delta_ic": 36.0,
-      "roic": 73.53367875647669,
+      "roic": -7.9596186203028605,
       "fcf": 14156.0,
-      "discount_factor": 0.5595507205425262,
-      "pv_fcf": 7921.0
+      "discount_factor": 0.5563718564566261,
+      "pv_fcf": 7876.0
     },
     {
       "year": 7,
@@ -227,12 +233,12 @@
       "ebita": 18836.0,
       "margin": 0.4012183952116216,
       "nopat": 15270.0,
-      "invested_capital": 226.0,
+      "invested_capital": -1750.0,
       "delta_ic": 33.0,
-      "roic": 67.56637168141593,
+      "roic": -8.725714285714286,
       "fcf": 15237.0,
-      "discount_factor": 0.5079740106320142,
-      "pv_fcf": 7740.0
+      "discount_factor": 0.5045612653409464,
+      "pv_fcf": 7688.0
     },
     {
       "year": 8,
@@ -241,12 +247,12 @@
       "ebita": 20042.0,
       "margin": 0.40122517616912234,
       "nopat": 16247.0,
-      "invested_capital": 256.0,
+      "invested_capital": -1720.0,
       "delta_ic": 30.0,
-      "roic": 63.46484375,
+      "roic": -9.445930232558139,
       "fcf": 16217.0,
-      "discount_factor": 0.4611210458161189,
-      "pv_fcf": 7478.0
+      "discount_factor": 0.45760621569957455,
+      "pv_fcf": 7421.0
     },
     {
       "year": 9,
@@ -255,12 +261,12 @@
       "ebita": 21084.0,
       "margin": 0.4012178877259753,
       "nopat": 17092.0,
-      "invested_capital": 282.0,
+      "invested_capital": -1694.0,
       "delta_ic": 26.0,
-      "roic": 60.60992907801418,
+      "roic": -10.089728453364817,
       "fcf": 17066.0,
-      "discount_factor": 0.41855150591819995,
-      "pv_fcf": 7143.0
+      "discount_factor": 0.41497714754482595,
+      "pv_fcf": 7082.0
     },
     {
       "year": 10,
@@ -269,12 +275,12 @@
       "ebita": 21927.0,
       "margin": 0.401211300592842,
       "nopat": 17776.0,
-      "invested_capital": 303.0,
+      "invested_capital": -1673.0,
       "delta_ic": 21.0,
-      "roic": 58.666666666666664,
+      "roic": -10.6252241482367,
       "fcf": 17755.0,
-      "discount_factor": 0.3799493100535061,
-      "pv_fcf": 6746.0
+      "discount_factor": 0.3763446916361588,
+      "pv_fcf": 6682.0
     }
   ],
   "terminal": {
@@ -283,26 +289,26 @@
     "ebita": 22804.0,
     "margin": 0.40121045779232206,
     "nopat": 18487.0,
-    "invested_capital": 324.86,
-    "roic": 56.90759096226066,
+    "invested_capital": -1651.14,
+    "roic": -11.196506656007363,
     "reinvestment_rate": 0,
     "fcf_terminal": 18465.0,
-    "terminal_value": 299736.0,
-    "discount_factor": 6.16783103168156,
-    "pv_terminal": 113889.0
+    "terminal_value": 294703.0,
+    "discount_factor": 6.006607094503114,
+    "pv_terminal": 110912.0
   },
   "valuation": {
-    "sum_pv_fcf": 76285.0,
-    "pv_terminal_value": 113889.0,
-    "enterprise_value": 190173.0,
+    "sum_pv_fcf": 75893.0,
+    "pv_terminal_value": 110912.0,
+    "enterprise_value": 186805.0,
     "cash_and_equivalents": 6890.0,
     "short_term_investments": 0,
     "long_term_investments": 0,
     "total_debt": 6228.0,
-    "equity_value": 190835.0,
+    "equity_value": 187467.0,
     "diluted_shares": 411.0,
-    "intrinsic_value_per_share": 464.32,
-    "current_price": 255.62,
-    "upside_downside_pct": 0.816
+    "intrinsic_value_per_share": 456.12,
+    "current_price": 250.17,
+    "upside_downside_pct": 0.823
   }
 }
