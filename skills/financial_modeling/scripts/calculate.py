@@ -100,6 +100,8 @@ def calculate_modeling(ticker, md_path):
     l4q_ebita = sum(clean_value(q.get("EBITA")) for q in l4q)
     l4q_growth = sum(clean_value(q.get("Organic Growth")) for q in l4q) / len(l4q) if l4q else 0
     l4q_tax = sum(clean_value(q.get("Adj Tax Rate")) for q in l4q) / len(l4q) if l4q else 0.21
+    base_ic = clean_value(l4q[-1].get("Invested Capital", "0")) if l4q else 0
+    base_roic = clean_value(str(l4q[-1].get("ROIC", "0")).replace('%', '')) / 100.0 if l4q else 0
     
     moat_kv = parse_kv_table(content, "### Economic Moat")
     moat = moat_kv.get("Rating", "Narrow").replace("**","").strip()
@@ -209,11 +211,28 @@ def calculate_modeling(ticker, md_path):
     target_growth_yr5 = l4q_growth + growth_magnitude
     target_margin_yr5 = base_margin + margin_magnitude
     terminal_growth = 0.04 if moat == "Wide" else 0.03
-    mct = 100.0 # Default for software with negative/volatile IC
+
+    l4q_turnovers = []
+    for q in l4q:
+        t_val = clean_value(str(q.get("Capital Turnover", "0")).replace('x', ''))
+        l4q_turnovers.append(t_val)
+    avg_turnover = sum(l4q_turnovers) / len(l4q_turnovers) if l4q_turnovers else 100.0
+    
+    if avg_turnover < 0 or avg_turnover > 100:
+        mct = 100.0
+        mct_rationale = f"Defaulted to 100.0x because historical average ({avg_turnover:.1f}x) is negative or >100."
+    else:
+        if avg_turnover == 0:
+            mct = 100.0
+            mct_rationale = f"Defaulted to 100.0x because historical average is 0."
+        else:
+            mct = round(avg_turnover, 1)
+            mct_rationale = f"Based on historical L4Q average ({avg_turnover:.1f}x)."
 
     # 5. Projections
     projections = []
     rev = base_rev
+    ic = base_ic
     for yr in range(1, 11):
         if yr <= 5:
             # Interpolated Stage 1
@@ -230,6 +249,8 @@ def calculate_modeling(ticker, md_path):
         nopat = ebita * (1 - l4q_tax)
         reinvestment = (rev - prev_rev) / mct
         fcf = nopat - reinvestment
+        ic = ic + reinvestment
+        roic = (nopat / ic) if ic != 0 else 0
         df = 1 / ((1 + wacc) ** yr)
         pv = fcf * df
         
@@ -241,6 +262,8 @@ def calculate_modeling(ticker, md_path):
             "margin": m,
             "nopat": nopat,
             "reinvestment": reinvestment,
+            "ic": ic,
+            "roic": roic,
             "fcf": fcf,
             "df": df,
             "pv": pv
@@ -303,14 +326,14 @@ def calculate_modeling(ticker, md_path):
 | Adjusted Tax Rate | {l4q_tax*100:.2f}% |
 | WACC | {wacc*100:.2f}% |
 | Base Revenue (Annualized) | ${base_rev:,.0f}{U} |
-| Base Invested Capital | $-1,976{U} |
+| Base Invested Capital | ${base_ic:,.0f}{U} |
 | Calculation Date | {today} |
 
 ### Assumption Rationale
 
 - **Revenue Growth**: L4Q organic growth averages {l4q_growth*100:.1f}%. Qualitative outlook: {growth_magnitude*100:+.1f} pp, target yr5 {target_growth_yr5*100:.1f}%. {moat} moat supports terminal {terminal_growth*100:.1f}%.
 - **EBITA Margin**: L4Q margin {base_margin*100:.1f}%. Qualitative outlook: {margin_magnitude*100:+.1f} pp, target yr5 {target_margin_yr5*100:.1f}%.
-- **Capital Turnover**: Defaulted to {mct}x due to negative invested capital.
+- **Capital Turnover**: {mct_rationale}
 """
 
     # Projections Table
@@ -321,6 +344,8 @@ def calculate_modeling(ticker, md_path):
     growth_row = "| Growth | -- | " + " | ".join([f"{p['growth']*100:.2f}%" for p in projections]) + f" | {terminal_growth*100:.2f}% |"
     ebita_row = f"| EBITA | {l4q_ebita:,.0f} | " + " | ".join([f"{p['ebita']:,.0f}" for p in projections]) + f" | {rev*(1+terminal_growth)*target_margin_yr5:,.0f} |"
     nopat_row = f"| NOPAT | {l4q_ebita*(1-l4q_tax):,.0f} | " + " | ".join([f"{p['nopat']:,.0f}" for p in projections]) + f" | {rev*(1+terminal_growth)*target_margin_yr5*(1-l4q_tax):,.0f} |"
+    ic_row = f"| Invested Capital | {base_ic:,.0f} | " + " | ".join([f"{p['ic']:,.0f}" for p in projections]) + " | -- |"
+    roic_row = f"| ROIC | {base_roic*100:.1f}% | " + " | ".join([f"{p['roic']*100:.1f}%" for p in projections]) + " | -- |"
     fcf_row = "| FCF | -- | " + " | ".join([f"{p['fcf']:,.0f}" for p in projections]) + f" | {tv_fcf:,.0f} |"
     pv_row = "| PV of FCF | -- | " + " | ".join([f"{p['pv']:,.0f}" for p in projections]) + f" | {pv_tv:,.0f} |"
 
@@ -334,6 +359,8 @@ def calculate_modeling(ticker, md_path):
 {growth_row}
 {ebita_row}
 {nopat_row}
+{ic_row}
+{roic_row}
 {fcf_row}
 {pv_row}
 

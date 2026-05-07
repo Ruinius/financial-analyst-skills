@@ -271,6 +271,7 @@ def read_financial_summary(content):
         "adj_tax_rate":     summary.get("Adjusted Tax Rate", "0").replace("**", "").strip(),
         "nopat":            safe_clean("NOPAT"),
         "invested_capital": safe_clean("Invested Capital"),
+        "capital_turnover": summary.get("Capital Turnover", "0").replace("**", "").strip(),
         "roic":             summary.get("ROIC", "0").replace("**", "").strip(),
         "organic_growth":   summary.get("Organic Revenue Growth", "0").replace("**", "").strip(),
     }
@@ -320,9 +321,9 @@ def create_metadata(ticker, company_name, currency, unit, cls_meta, fin_summary,
     lines.append("")
     lines.append("## Financial History")
     lines.append("")
-    lines.append("| Time Period | Period End | Revenue | EBITA | EBITA Margin | Adj Tax Rate | NOPAT | Invested Capital | ROIC | Organic Growth |")
-    lines.append("|-------------|-----------|---------|-------|--------------|-------------|-------|-----------------|------|----------------|")
-    lines.append(f"| {cls_meta['time_period']} | {cls_meta['period_end_date']} | {_format_number(fin_summary['revenue'])} | {_format_number(fin_summary['ebita'])} | {fin_summary['ebita_margin']} | {fin_summary['adj_tax_rate']} | {_format_number(fin_summary['nopat'])} | {_format_number(fin_summary['invested_capital'])} | {fin_summary['roic']} | {fin_summary['organic_growth']} |")
+    lines.append("| Time Period | Period End | Revenue | EBITA | EBITA Margin | Adj Tax Rate | NOPAT | Invested Capital | Capital Turnover | ROIC | Organic Growth |")
+    lines.append("|-------------|-----------|---------|-------|--------------|-------------|-------|-----------------|------------------|------|----------------|")
+    lines.append(f"| {cls_meta['time_period']} | {cls_meta['period_end_date']} | {_format_number(fin_summary['revenue'])} | {_format_number(fin_summary['ebita'])} | {fin_summary['ebita_margin']} | {fin_summary['adj_tax_rate']} | {_format_number(fin_summary['nopat'])} | {_format_number(fin_summary['invested_capital'])} | {fin_summary['capital_turnover']} | {fin_summary['roic']} | {fin_summary['organic_growth']} |")
     lines.append("")
 
     return "\n".join(lines)
@@ -430,7 +431,7 @@ def update_metadata(existing_content, ticker, cls_meta, fin_summary, today_iso):
                 continue
             filtered_fin.append(row)
 
-        new_fin_row = f"| {cls_meta['time_period']} | {cls_meta['period_end_date']} | {_format_number(fin_summary['revenue'])} | {_format_number(fin_summary['ebita'])} | {fin_summary['ebita_margin']} | {fin_summary['adj_tax_rate']} | {_format_number(fin_summary['nopat'])} | {_format_number(fin_summary['invested_capital'])} | {fin_summary['roic']} | {fin_summary['organic_growth']} |"
+        new_fin_row = f"| {cls_meta['time_period']} | {cls_meta['period_end_date']} | {_format_number(fin_summary['revenue'])} | {_format_number(fin_summary['ebita'])} | {fin_summary['ebita_margin']} | {fin_summary['adj_tax_rate']} | {_format_number(fin_summary['nopat'])} | {_format_number(fin_summary['invested_capital'])} | {fin_summary['capital_turnover']} | {fin_summary['roic']} | {fin_summary['organic_growth']} |"
         filtered_fin.append(new_fin_row)
 
         # Sort by Period End (col index 2)

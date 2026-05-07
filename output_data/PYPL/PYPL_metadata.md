@@ -76,41 +76,41 @@ _Last updated: 2026-05-06 | Source: Morningstar Equity Analyst Report (2026-05-0
 
 ## WACC
 
-| Field | Value |
-|-------|-------|
-| Risk-Free Rate | 4.20% |
-| Equity Risk Premium | 5.00% |
-| Country Risk Premium | 0.00% |
-| Raw Levered Beta | 1.395 |
-| Unlevered Beta | 1.1894 |
-| Adjusted Beta (Blume's) | 1.3210 |
-| Cost of Equity | 10.80% |
-| Total Debt | $9,409M |
-| Interest Expense (Ann.) | $0M |
-| Cost of Debt | 5.00% |
-| Market Cap | $40,815,021,564 |
-| Weight of Equity | 81.27% |
-| Weight of Debt | 18.73% |
-| Tax Rate (Statutory) | 25.00% |
-| Calculated WACC | 9.48% |
-| **WACC (Bounded)** | **9.48%** |
-| Calculation Date | 2026-05-06 |
+| Field                   | Value           |
+| ----------------------- | --------------- |
+| Risk-Free Rate          | 4.20%           |
+| Equity Risk Premium     | 5.00%           |
+| Country Risk Premium    | 0.00%           |
+| Raw Levered Beta        | 1.395           |
+| Unlevered Beta          | 1.1894          |
+| Adjusted Beta (Blume's) | 1.3210          |
+| Cost of Equity          | 10.80%          |
+| Total Debt              | $9,409M         |
+| Interest Expense (Ann.) | $0M             |
+| Cost of Debt            | 5.00%           |
+| Market Cap              | $40,815,021,564 |
+| Weight of Equity        | 81.27%          |
+| Weight of Debt          | 18.73%          |
+| Tax Rate (Statutory)    | 25.00%          |
+| Calculated WACC         | 9.48%           |
+| **WACC (Bounded)**      | **9.48%**       |
+| Calculation Date        | 2026-05-06      |
 
 ## DCF Assumptions
 
-| Parameter | Stage 1 (Yr 1-5) | Stage 2 (Yr 6-10) | Terminal |
-|-----------|-------------------|--------------------|----------|
-| Revenue Growth | 4.75% | 3.00% | 3.00% |
-| EBITA Margin | 24.34% | 24.34% | 24.34% |
-| Marginal Capital Turnover | 100.0x | 100.0x | 100.0x |
+| Parameter                 | Stage 1 (Yr 1-5) | Stage 2 (Yr 6-10) | Terminal |
+| ------------------------- | ---------------- | ----------------- | -------- |
+| Revenue Growth            | 4.75%            | 3.00%             | 3.00%    |
+| EBITA Margin              | 24.34%           | 24.34%            | 24.34%   |
+| Marginal Capital Turnover | 100.0x           | 100.0x            | 100.0x   |
 
-| Parameter | Value |
-|-----------|-------|
-| Adjusted Tax Rate | 8.31% |
-| WACC | 9.48% |
-| Base Revenue (Annualized) | $33,734M |
-| Base Invested Capital | $-1,976M |
-| Calculation Date | 2026-05-06 |
+| Parameter                 | Value      |
+| ------------------------- | ---------- |
+| Adjusted Tax Rate         | 8.31%      |
+| WACC                      | 9.48%      |
+| Base Revenue (Annualized) | $33,734M   |
+| Base Invested Capital     | $-1,976M   |
+| Calculation Date          | 2026-05-06 |
 
 ### Assumption Rationale
 
@@ -122,40 +122,39 @@ _Last updated: 2026-05-06 | Source: Morningstar Equity Analyst Report (2026-05-0
 
 ### Projections
 
-| | Base | Yr 1 | Yr 2 | Yr 3 | Yr 4 | Yr 5 | Yr 6 | Yr 7 | Yr 8 | Yr 9 | Yr 10 | Terminal |
-|---|------|---|---|---|---|---|---|---|---|---|---|----------|
-| Revenue | 33,734 | 35,336 | 37,015 | 38,773 | 40,615 | 42,544 | 44,416 | 46,215 | 47,925 | 49,530 | 51,016 | 52,547 |
-| Growth | -- | 4.75% | 4.75% | 4.75% | 4.75% | 4.75% | 4.40% | 4.05% | 3.70% | 3.35% | 3.00% | 3.00% |
-| EBITA | 8,211 | 8,601 | 9,010 | 9,438 | 9,886 | 10,355 | 10,811 | 11,249 | 11,665 | 12,056 | 12,418 | 12,790 |
-| NOPAT | 7,529 | 7,886 | 8,261 | 8,654 | 9,065 | 9,495 | 9,913 | 10,314 | 10,696 | 11,054 | 11,386 | 11,728 |
-| FCF | -- | 7,870 | 8,244 | 8,636 | 9,046 | 9,476 | 9,894 | 10,296 | 10,679 | 11,038 | 11,371 | 11,712 |
-| PV of FCF | -- | 7,189 | 6,878 | 6,581 | 6,296 | 6,024 | 5,745 | 5,461 | 5,173 | 4,884 | 4,595 | 73,009 |
+|           | Base   | Yr 1   | Yr 2   | Yr 3   | Yr 4   | Yr 5   | Yr 6   | Yr 7   | Yr 8   | Yr 9   | Yr 10  | Terminal |
+| --------- | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | -------- |
+| Revenue   | 33,734 | 35,336 | 37,015 | 38,773 | 40,615 | 42,544 | 44,416 | 46,215 | 47,925 | 49,530 | 51,016 | 52,547   |
+| Growth    | --     | 4.75%  | 4.75%  | 4.75%  | 4.75%  | 4.75%  | 4.40%  | 4.05%  | 3.70%  | 3.35%  | 3.00%  | 3.00%    |
+| EBITA     | 8,211  | 8,601  | 9,010  | 9,438  | 9,886  | 10,355 | 10,811 | 11,249 | 11,665 | 12,056 | 12,418 | 12,790   |
+| NOPAT     | 7,529  | 7,886  | 8,261  | 8,654  | 9,065  | 9,495  | 9,913  | 10,314 | 10,696 | 11,054 | 11,386 | 11,728   |
+| FCF       | --     | 7,870  | 8,244  | 8,636  | 9,046  | 9,476  | 9,894  | 10,296 | 10,679 | 11,038 | 11,371 | 11,712   |
+| PV of FCF | --     | 7,189  | 6,878  | 6,581  | 6,296  | 6,024  | 5,745  | 5,461  | 5,173  | 4,884  | 4,595  | 73,009   |
 
 ### Valuation
 
-| Field | Value |
-|-------|-------|
-| Sum of PV (Years 1-10) | $58,826M |
-| PV of Terminal Value | $73,009M |
-| Terminal Value (undiscounted) | $180,656M |
-| **Enterprise Value** | **$131,835M** |
-| TV as % of EV | 55.4% |
-| Calculation Date | 2026-05-06 |
+| Field                         | Value         |
+| ----------------------------- | ------------- |
+| Sum of PV (Years 1-10)        | $58,826M      |
+| PV of Terminal Value          | $73,009M      |
+| Terminal Value (undiscounted) | $180,656M     |
+| **Enterprise Value**          | **$131,835M** |
+| TV as % of EV                 | 55.4%         |
+| Calculation Date              | 2026-05-06    |
 
 ## Intrinsic Value
 
-| Field | Value |
-|-------|-------|
-| Enterprise Value | $131,835M |
-| (+) Cash and Equivalents | $13,467M |
-| (-) Total Debt | $9,409M |
-| **Equity Value** | **$135,893M** |
-| Diluted Shares Outstanding | 920M |
-| **Intrinsic Value Per Share** | **$147.71** |
-| Currency | USD |
-| FX Rate Applied | 1.0000 |
-| ADR Ratio Applied | 1.0 |
-| Current Market Price | $46.27 |
-| **Upside/Downside** | **+219.2%** |
-| Calculation Date | 2026-05-06 |
-
+| Field                         | Value         |
+| ----------------------------- | ------------- |
+| Enterprise Value              | $131,835M     |
+| (+) Cash and Equivalents      | $13,467M      |
+| (-) Total Debt                | $9,409M       |
+| **Equity Value**              | **$135,893M** |
+| Diluted Shares Outstanding    | 920M          |
+| **Intrinsic Value Per Share** | **$147.71**   |
+| Currency                      | USD           |
+| FX Rate Applied               | 1.0000        |
+| ADR Ratio Applied             | 1.0           |
+| Current Market Price          | $46.27        |
+| **Upside/Downside**           | **+219.2%**   |
+| Calculation Date              | 2026-05-06    |

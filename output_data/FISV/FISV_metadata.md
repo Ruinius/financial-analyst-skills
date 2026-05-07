@@ -24,12 +24,12 @@
 
 ## Financial History
 
-| Time Period | Period End | Revenue | EBITA | EBITA Margin | Adj Tax Rate | NOPAT   | Invested Capital | ROIC   | Organic Growth |
-| ----------- | ---------- | ------- | ----- | ------------ | ------------ | ------- | ---------------- | ------ | -------------- |
-| Q2 2025     | 2025-06-30 | 5,516   | 2,051 | 37.18%       | 11.84%       | 1,808.2 | 11,888           | 60.84% | 8.00%          |
-| Q3 2025     | 2025-09-30 | 5,263   | 1,658 | 31.50%       | 11.94%       | 1,460   | 11,743           | 49.73% | 1.00%          |
-| Q4 2025     | 2025-12-31 | 5,284   | 1,712 | 32.40%       | 10.18%       | 1,537.8 | 11,130           | 55.27% | 0.00%          |
-| Q1 2026     | 2026-03-31 | 5,027   | 1,473 | 29.30%       | -2.51%       | 1,510   | 11,909           | 50.72% | -4.00%         |
+| Time Period | Period End | Revenue | EBITA | EBITA Margin | Adj Tax Rate | NOPAT   | Invested Capital | Capital Turnover | ROIC   | Organic Growth |
+| ----------- | ---------- | ------- | ----- | ------------ | ------------ | ------- | ---------------- | ---------------- | ------ | -------------- |
+| Q2 2025     | 2025-06-30 | 5,516   | 2,051 | 37.18%       | 11.84%       | 1,808.2 | 11,888           | 1.86x            | 60.84% | 8.00%          |
+| Q3 2025     | 2025-09-30 | 5,263   | 1,658 | 31.50%       | 11.94%       | 1,460   | 11,743           | 1.79x            | 49.73% | 1.00%          |
+| Q4 2025     | 2025-12-31 | 5,284   | 1,712 | 32.40%       | 10.18%       | 1,537.8 | 11,130           | 1.90x            | 55.27% | 0.00%          |
+| Q1 2026     | 2026-03-31 | 5,027   | 1,473 | 29.30%       | -2.51%       | 1,510   | 11,909           | 1.69x            | 50.72% | -4.00%         |
 
 ---
 
@@ -101,21 +101,21 @@ _Last updated: 2026-05-06 | Source: Morningstar Equity Analyst Report (2026-05-0
 |-----------|-------------------|--------------------|----------|
 | Revenue Growth | -2.75% | 3.00% | 3.00% |
 | EBITA Margin | 35.69% | 35.69% | 35.69% |
-| Marginal Capital Turnover | 100.0x | 100.0x | 100.0x |
+| Marginal Capital Turnover | 1.8x | 1.8x | 1.8x |
 
 | Parameter | Value |
 |-----------|-------|
 | Adjusted Tax Rate | 7.86% |
 | WACC | 7.13% |
 | Base Revenue (Annualized) | $21,090M |
-| Base Invested Capital | $-1,976M |
+| Base Invested Capital | $11,909M |
 | Calculation Date | 2026-05-06 |
 
 ### Assumption Rationale
 
 - **Revenue Growth**: L4Q organic growth averages 1.2%. Qualitative outlook: -4.0 pp, target yr5 -2.8%. Narrow moat supports terminal 3.0%.
 - **EBITA Margin**: L4Q margin 32.7%. Qualitative outlook: +3.0 pp, target yr5 35.7%.
-- **Capital Turnover**: Defaulted to 100.0x due to negative invested capital.
+- **Capital Turnover**: Based on historical L4Q average (1.8x).
 
 ## DCF Model
 
@@ -127,34 +127,36 @@ _Last updated: 2026-05-06 | Source: Morningstar Equity Analyst Report (2026-05-0
 | Growth | -- | 0.45% | -0.35% | -1.15% | -1.95% | -2.75% | -1.60% | -0.45% | 0.70% | 1.85% | 3.00% | 3.00% |
 | EBITA | 6,894 | 7,052 | 7,154 | 7,197 | 7,179 | 7,101 | 6,988 | 6,956 | 7,005 | 7,135 | 7,349 | 7,569 |
 | NOPAT | 6,352 | 6,498 | 6,592 | 6,631 | 6,615 | 6,543 | 6,438 | 6,409 | 6,454 | 6,574 | 6,771 | 6,974 |
-| FCF | -- | 6,497 | 6,592 | 6,634 | 6,619 | 6,549 | 6,442 | 6,410 | 6,453 | 6,570 | 6,765 | 6,968 |
-| PV of FCF | -- | 6,064 | 5,744 | 5,395 | 5,025 | 4,641 | 4,261 | 3,958 | 3,720 | 3,535 | 3,398 | 84,751 |
+| Invested Capital | 11,909 | 11,962 | 11,921 | 11,786 | 11,560 | 11,247 | 11,070 | 11,021 | 11,097 | 11,299 | 11,632 | -- |
+| ROIC | 50.7% | 54.3% | 55.3% | 56.3% | 57.2% | 58.2% | 58.2% | 58.2% | 58.2% | 58.2% | 58.2% | -- |
+| FCF | -- | 6,445 | 6,633 | 6,766 | 6,841 | 6,856 | 6,615 | 6,458 | 6,378 | 6,372 | 6,438 | 6,631 |
+| PV of FCF | -- | 6,016 | 5,779 | 5,503 | 5,194 | 4,859 | 4,376 | 3,988 | 3,677 | 3,428 | 3,233 | 80,652 |
 
 ### Valuation
 
 | Field | Value |
 |-------|-------|
-| Sum of PV (Years 1-10) | $45,742M |
-| PV of Terminal Value | $84,751M |
-| Terminal Value (undiscounted) | $168,744M |
-| **Enterprise Value** | **$130,494M** |
-| TV as % of EV | 64.9% |
+| Sum of PV (Years 1-10) | $46,054M |
+| PV of Terminal Value | $80,652M |
+| Terminal Value (undiscounted) | $160,582M |
+| **Enterprise Value** | **$126,706M** |
+| TV as % of EV | 63.7% |
 | Calculation Date | 2026-05-06 |
 
 ## Intrinsic Value
 
 | Field | Value |
 |-------|-------|
-| Enterprise Value | $130,494M |
+| Enterprise Value | $126,706M |
 | (+) Cash and Equivalents | $829M |
 | (-) Total Debt | $29,182M |
-| **Equity Value** | **$102,141M** |
+| **Equity Value** | **$98,353M** |
 | Diluted Shares Outstanding | 535M |
-| **Intrinsic Value Per Share** | **$190.77** |
+| **Intrinsic Value Per Share** | **$183.70** |
 | Currency | USD |
 | FX Rate Applied | 1.0000 |
 | ADR Ratio Applied | 1.0 |
 | Current Market Price | $56.11 |
-| **Upside/Downside** | **+240.0%** |
+| **Upside/Downside** | **+227.4%** |
 | Calculation Date | 2026-05-06 |
 
