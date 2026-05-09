@@ -32,83 +32,88 @@
 
 ## WACC
 
-| Field                   | Value           |
-| ----------------------- | --------------- |
-| Risk-Free Rate          | 4.20%           |
-| Equity Risk Premium     | 5.00%           |
-| Country Risk Premium    | 0.00%           |
-| Raw Levered Beta        | 1.013           |
-| Unlevered Beta          | 1.0087          |
-| Adjusted Beta (Blume's) | 1.0087          |
-| Cost of Equity          | 9.24%           |
-| Total Debt              | $0K             |
-| Interest Expense (Ann.) | $0K             |
-| Cost of Debt            | 5.00%           |
-| Market Cap              | $18,553,926,852 |
-| Weight of Equity        | 100.00%         |
-| Weight of Debt          | 0.00%           |
-| Tax Rate (Statutory)    | 25.00%          |
-| Calculated WACC         | 9.24%           |
-| **WACC (Bounded)**      | **9.24%**       |
-| Calculation Date        | 2026-03-25      |
+| Field | Value |
+|-------|-------|
+| Risk-Free Rate | 4.20% |
+| Equity Risk Premium | 5.00% |
+| Country Risk Premium | 0.00% |
+| Raw Levered Beta | 0.899 |
+| Unlevered Beta | 0.8990 |
+| Adjusted Beta (Blume's) | 0.9327 |
+| Cost of Equity | 8.86% |
+| Total Debt | $0K |
+| Interest Expense (Ann.) | $0K |
+| Cost of Debt | 5.00% |
+| Market Cap | $15,388,871,600 |
+| Weight of Equity | 100.00% |
+| Weight of Debt | 0.00% |
+| Tax Rate (Statutory) | 25.00% |
+| Calculated WACC | 8.86% |
+| **WACC (Bounded)** | **8.86%** |
+| Calculation Date | 2026-05-09 |
 
 ## DCF Assumptions
 
-| Parameter                 | Stage 1 (Yr 1-5) | Stage 2 (Yr 6-10) | Terminal |
-| ------------------------- | ---------------- | ----------------- | -------- |
-| Revenue Growth            | 7.50%            | 3.00%             | 3.00%    |
-| EBITA Margin              | 23.36%           | 23.36%            | 23.36%   |
-| Marginal Capital Turnover | 100.0x           | 100.0x            | 100.0x   |
+| Parameter | Stage 1 (Yr 1-5) | Stage 2 (Yr 6-10) | Terminal |
+|-----------|-------------------|--------------------|----------|
+| Revenue Growth | 7.50% | 3.00% | 3.00% |
+| EBITA Margin | 23.36% | 23.36% | 23.36% |
+| Marginal Capital Turnover | 100.0x | 100.0x | 100.0x |
 
-| Parameter                 | Value        |
-| ------------------------- | ------------ |
-| Adjusted Tax Rate         | 30.35%       |
-| WACC                      | 9.24%        |
+| Parameter | Value |
+|-----------|-------|
+| Adjusted Tax Rate | 30.35% |
+| WACC | 8.86% |
 | Base Revenue (Annualized) | $10,181,732K |
-| Base Invested Capital     | $-1,976K     |
-| Calculation Date          | 2026-03-25   |
+| Base Invested Capital | $3,258,469K |
+| Calculation Date | 2026-05-09 |
 
 ### Assumption Rationale
 
 - **Revenue Growth**: L4Q organic growth averages 7.5%. Qualitative outlook: +0.0 pp, target yr5 7.5%. Narrow moat supports terminal 3.0%.
 - **EBITA Margin**: L4Q margin 23.4%. Qualitative outlook: +0.0 pp, target yr5 23.4%.
-- **Capital Turnover**: Defaulted to 100.0x due to negative invested capital.
+- **Capital Turnover**: Defaulted to 100.0x because historical average is 0.
 
 ## DCF Model
 
 ### Projections
 
-|           | Base       | Yr 1       | Yr 2       | Yr 3       | Yr 4       | Yr 5       | Yr 6       | Yr 7       | Yr 8       | Yr 9       | Yr 10      | Terminal   |
-| --------- | ---------- | ---------- | ---------- | ---------- | ---------- | ---------- | ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |
-| Revenue   | 10,181,732 | 10,945,362 | 11,766,264 | 12,648,734 | 13,597,389 | 14,617,193 | 15,581,928 | 16,470,098 | 17,260,662 | 17,933,828 | 18,471,843 | 19,025,998 |
-| Growth    | --         | 7.50%      | 7.50%      | 7.50%      | 7.50%      | 7.50%      | 6.60%      | 5.70%      | 4.80%      | 3.90%      | 3.00%      | 3.00%      |
-| EBITA     | 2,378,537  | 2,556,927  | 2,748,697  | 2,954,849  | 3,176,463  | 3,414,697  | 3,640,068  | 3,847,551  | 4,032,234  | 4,189,491  | 4,315,176  | 4,444,631  |
-| NOPAT     | 1,656,592  | 1,780,836  | 1,914,399  | 2,057,979  | 2,212,327  | 2,378,251  | 2,535,216  | 2,679,723  | 2,808,350  | 2,917,876  | 3,005,412  | 3,095,574  |
-| FCF       | --         | 1,773,200  | 1,906,190  | 2,049,154  | 2,202,840  | 2,368,053  | 2,525,569  | 2,670,842  | 2,800,444  | 2,911,144  | 3,000,032  | 3,090,033  |
-| PV of FCF | --         | 1,623,165  | 1,597,262  | 1,571,773  | 1,546,690  | 1,522,007  | 1,485,900  | 1,438,413  | 1,380,599  | 1,313,739  | 1,239,300  | 20,445,472 |
+| | Base | Yr 1 | Yr 2 | Yr 3 | Yr 4 | Yr 5 | Yr 6 | Yr 7 | Yr 8 | Yr 9 | Yr 10 | Terminal |
+|---|------|---|---|---|---|---|---|---|---|---|---|----------|
+| Revenue | 10,181,732 | 10,945,362 | 11,766,264 | 12,648,734 | 13,597,389 | 14,617,193 | 15,581,928 | 16,470,098 | 17,260,662 | 17,933,828 | 18,471,843 | 19,025,998 |
+| Growth | -- | 7.50% | 7.50% | 7.50% | 7.50% | 7.50% | 6.60% | 5.70% | 4.80% | 3.90% | 3.00% | 3.00% |
+| EBITA | 2,378,537 | 2,556,927 | 2,748,697 | 2,954,849 | 3,176,463 | 3,414,697 | 3,640,068 | 3,847,551 | 4,032,234 | 4,189,491 | 4,315,176 | 4,444,631 |
+| NOPAT | 1,656,592 | 1,780,836 | 1,914,399 | 2,057,979 | 2,212,327 | 2,378,251 | 2,535,216 | 2,679,723 | 2,808,350 | 2,917,876 | 3,005,412 | 3,095,574 |
+| Invested Capital | 3,258,469 | 3,266,105 | 3,274,314 | 3,283,139 | 3,292,626 | 3,302,824 | 3,312,471 | 3,321,353 | 3,329,258 | 3,335,990 | 3,341,370 | -- |
+| ROIC | 41.6% | 54.5% | 58.5% | 62.7% | 67.2% | 72.0% | 76.5% | 80.7% | 84.4% | 87.5% | 89.9% | -- |
+| FCF | -- | 1,773,200 | 1,906,190 | 2,049,154 | 2,202,840 | 2,368,053 | 2,525,569 | 2,670,842 | 2,800,444 | 2,911,144 | 3,000,032 | 3,090,033 |
+| PV of FCF | -- | 1,628,831 | 1,608,432 | 1,588,290 | 1,568,399 | 1,548,757 | 1,517,293 | 1,473,930 | 1,419,626 | 1,355,592 | 1,283,245 | 22,542,507 |
 
 ### Valuation
 
-| Field                         | Value            |
-| ----------------------------- | ---------------- |
-| Sum of PV (Years 1-10)        | $14,718,848K     |
-| PV of Terminal Value          | $20,445,472K     |
-| Terminal Value (undiscounted) | $49,493,317K     |
-| **Enterprise Value**          | **$35,164,319K** |
-| TV as % of EV                 | 58.1%            |
-| Calculation Date              | 2026-03-25       |
+| Field | Value |
+|-------|-------|
+| Sum of PV (Years 1-10) | $14,992,395K |
+| PV of Terminal Value | $22,542,507K |
+| Terminal Value (undiscounted) | $52,700,957K |
+| **Enterprise Value** | **$37,534,902K** |
+| TV as % of EV | 60.1% |
+| Calculation Date | 2026-05-09 |
 
 ## Intrinsic Value
 
-| Field                         | Value            |
-| ----------------------------- | ---------------- |
-| Enterprise Value              | $35,164,319K     |
-| (+) Cash and Equivalents      | $1,188,419K      |
-| (-) Total Debt                | $0K              |
-| **Equity Value**              | **$36,352,738K** |
-| Diluted Shares Outstanding    | 110M             |
-| **Intrinsic Value Per Share** | **$329.04**      |
-| Currency                      | USD              |
-| Current Market Price          | $158.16          |
-| **Upside/Downside**           | **+108.0%**      |
-| Calculation Date              | 2026-03-25       |
+| Field | Value |
+|-------|-------|
+| Enterprise Value | $37,534,902K |
+| (+) Cash and Equivalents | $1,188,419K |
+| (-) Total Debt | $0K |
+| **Equity Value** | **$38,723,321K** |
+| Diluted Shares Outstanding | 123M |
+| **Intrinsic Value Per Share** | **$315.33** |
+| Currency | USD |
+| FX Rate Applied | 1.0000 |
+| ADR Ratio Applied | 1.0 |
+| Current Market Price | $131.18 |
+| **Upside/Downside** | **+140.4%** |
+| Calculation Date | 2026-05-09 |
+
