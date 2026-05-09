@@ -9,3 +9,8 @@ All calculation logic is consolidated into a single script that enforces the cor
 
 1. Execute the script: `python skills/financial_calculations/scripts/calculate.py {markdown_file}`
 2. Verify no errors were thrown.
+
+## Changelog
+
+- 2026-05-07: Updated `calculate.py` to correctly identify `interest_expense_net` and use absolute values for interest expense in the summary table, fixing WACC calculation issues.
+

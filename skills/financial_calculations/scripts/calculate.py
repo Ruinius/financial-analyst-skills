@@ -251,8 +251,9 @@ def calculate_summary(content, is_items, ebita, ebita_margin, effective_rate, ad
     interest_expense = 0
     for item in is_items:
         std_name = item.get("Standardized Name", "").lower()
-        if std_name == "interest_expense":
-            interest_expense = clean_value(item.get("Value", "0"))
+        if std_name in ("interest_expense", "interest_expense_net"):
+            interest_expense = abs(clean_value(item.get("Value", "0")))
+
 
     # Tax choice
     chosen_tax_rate = adjusted_rate if adjusted_rate != 0 else effective_rate
