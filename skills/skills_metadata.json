@@ -1,10 +1,10 @@
 {
   "version": "1.0",
-  "description": "Registry of Tiger-Skills AI orchestrated processes.",
+  "description": "Registry of Financial-Analyst-Skills AI orchestrated processes.",
   "skills": [
     {
       "name": "Skills Orchestrator Pipeline",
-      "description": "A runbook for reasoning models to execute the complete tiger-skills pipeline in the correct dependency order. Routes documents through different skill chains based on document type.",
+      "description": "A runbook for reasoning models to execute the complete financial-analyst-skills pipeline in the correct dependency order. Routes documents through different skill chains based on document type.",
       "path": "PIPELINE.md",
       "directory": ""
     },

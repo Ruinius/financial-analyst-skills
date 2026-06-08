@@ -1,7 +1,7 @@
 """
 Fetch market data for a stock ticker from Yahoo Finance.
 
-A single, consistent tool for all yfinance lookups across tiger-skills.
+A single, consistent tool for all yfinance lookups across financial-analyst-skills.
 Supersedes the standalone validate_ticker.py — validation is now a subcommand.
 
 Usage:
@@ -251,7 +251,7 @@ def get_exchange_rate(from_currency: str, to_currency: str = "USD", verbose: boo
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Yahoo Finance market data tool for tiger-skills",
+        description="Yahoo Finance market data tool for financial-analyst-skills",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:

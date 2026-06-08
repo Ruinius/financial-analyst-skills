@@ -1,5 +1,5 @@
 """
-Lightweight static file server for tiger-skills with scenario save endpoint.
+Lightweight static file server for financial-analyst-skills with scenario save endpoint.
 
 Usage:
     python tools/serve.py [--port 3000]
@@ -18,7 +18,7 @@ import urllib.parse
 from pathlib import Path
 
 PORT = 3000
-ROOT = Path(__file__).resolve().parent.parent  # tiger-skills root
+ROOT = Path(__file__).resolve().parent.parent  # financial-analyst-skills root
 
 
 class Handler(http.server.SimpleHTTPRequestHandler):
@@ -105,7 +105,7 @@ def main():
         if idx + 1 < len(sys.argv):
             port = int(sys.argv[idx + 1])
 
-    print(f"Tiger-Skills Viewer | http://127.0.0.1:{port}/?ticker=ADBE")
+    print(f"Financial Analyst Skills Viewer | http://127.0.0.1:{port}/?ticker=ADBE")
     print(f"Serving from: {ROOT}")
     print(f"Press Ctrl+C to stop\n")
 

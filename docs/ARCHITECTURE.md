@@ -1,6 +1,6 @@
-# Tiger-Skills Architecture & System Design
+# Financial-Analyst-Skills Architecture & System Design
 
-This document describes the architectural principles and pipeline design of the Tiger-Skills project.
+This document describes the architectural principles and pipeline design of the financial-analyst-skills project.
 
 ## What Are Antigravity Skills?
 
@@ -74,9 +74,9 @@ The pipeline transforms raw PDFs into a structured valuation model via the follo
 
 ---
 
-## Key Difference: Tiger-Cafe vs. Tiger-Skills
+## Key Difference: Tiger-Cafe vs. Financial-Analyst-Skills
 
-| Aspect                 | Tiger-Cafe                                    | Tiger-Skills                                               |
+| Aspect                 | Tiger-Cafe                                    | Financial-Analyst-Skills                                   |
 | ---------------------- | --------------------------------------------- | ---------------------------------------------------------- |
 | Architecture           | Full-stack web app (FastAPI + React + SQLite) | Flat file system + AI skills                               |
 | Storage                | SQL database with ORM models                  | Markdown files + PDFs in folders                           |

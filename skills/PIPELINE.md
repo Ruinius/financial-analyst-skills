@@ -1,11 +1,11 @@
 ---
 name: Skills Orchestrator Pipeline
-description: A runbook for reasoning models to execute the complete tiger-skills pipeline in the correct dependency order. Routes documents through different skill chains based on document type.
+description: A runbook for reasoning models to execute the complete financial-analyst-skills pipeline in the correct dependency order. Routes documents through different skill chains based on document type.
 ---
 
-# 🚀 Tiger-Skills Full Pipeline Runbook
+# 🚀 Financial-Analyst-Skills Full Pipeline Runbook
 
-This runbook guides reasoning models through the end-to-end execution of the tiger-skills pipeline. Documents are routed through different skill chains depending on their type.
+This runbook guides reasoning models through the end-to-end execution of the financial-analyst-skills pipeline. Documents are routed through different skill chains depending on their type.
 
 ## Prerequisites
 

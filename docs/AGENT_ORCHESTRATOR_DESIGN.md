@@ -5,7 +5,7 @@
 
 ## The Problem with the Current Pipeline
 
-Currently, the `tiger-skills` pipeline (`skills/PIPELINE.md`) is fully sequential. It processes one file at a time from `input_data/` using a single continuous context window. This approach has significant drawbacks:
+Currently, the `financial-analyst-skills` pipeline (`skills/PIPELINE.md`) is fully sequential. It processes one file at a time from `input_data/` using a single continuous context window. This approach has significant drawbacks:
 
 1. **Context Window Pollution / LLM Confusion:** As more documents are processed, the context window fills up with previous extractions, leading to hallucinated data or cross-contamination between companies/documents.
 2. **Token Consumption:** Carrying the history of all previously processed documents into the processing of the next document wastes an enormous amount of tokens.
@@ -15,7 +15,7 @@ To resolve these issues, we are transitioning from a linear batch script to an *
 
 ## Proposed Architecture: OpenCode in Docker
 
-The entire tiger-skills system would be re-hosted inside a **Docker container** running an **OpenCode** instance. OpenCode replaces Antigravity as the agentic runtime, and the current `SKILL.md` files are converted into OpenCode agents and tools. The Docker container provides a reproducible, portable environment that bundles OpenCode, the Tiger-Transformer model, and all Python dependencies.
+The entire financial-analyst-skills system would be re-hosted inside a **Docker container** running an **OpenCode** instance. OpenCode replaces Antigravity as the agentic runtime, and the current `SKILL.md` files are converted into OpenCode agents and tools. The Docker container provides a reproducible, portable environment that bundles OpenCode, the Tiger-Transformer model, and all Python dependencies.
 
 ### Infrastructure Layer
 

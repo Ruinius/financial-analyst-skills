@@ -1,6 +1,6 @@
-# Tiger-Skills Roadmap
+# Financial-Analyst-Skills Roadmap
 
-This document outlines the development status and upcoming features for the Tiger-Skills project.
+This document outlines the development status and upcoming features for the financial-analyst-skills project.
 
 ## Current Status (Q1 2026)
 
@@ -15,7 +15,7 @@ This document outlines the development status and upcoming features for the Tige
 ## Upcoming Features (Next 2-4 Weeks)
 
 ### 1. OpenCode Migration & Docker Containerization
-- Migrate the entire tiger-skills runtime from **Antigravity** to **OpenCode** inside a **Docker container**. Full design in `docs/AGENT_ORCHESTRATOR_DESIGN.md`.
+- Migrate the entire financial-analyst-skills runtime from **Antigravity** to **OpenCode** inside a **Docker container**. Full design in `docs/AGENT_ORCHESTRATOR_DESIGN.md`.
 - Convert existing `SKILL.md` files into OpenCode agents and tools. Deterministic scripts (Phases 3, 6, 7) become direct tool calls — no LLM needed.
 - **Multi-Model Sub-Agents**: OpenCode spawns isolated sub-agents backed by different LLM providers (Deepseek, GLM, KIMI) based on task complexity.
 - **Model Tiering**: Lightweight models (Deepseek-V3, GLM-4-Flash) for structural phases (1, 4). Heavyweight models (KIMI-K2, Deepseek-R1) for extraction and qualitative reasoning (2, 5).

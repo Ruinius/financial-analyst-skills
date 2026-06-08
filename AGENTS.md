@@ -2,12 +2,12 @@
 
 ## Folder Structure
 
+- `AGENTS.md`: This project documentation index and developer guide.
 - `.agents/`: Agent-specific configuration and data.
 - `assets/`: Project assets (images, etc.).
 - `docs/`: Project documentation.
   - `AGENT_ORCHESTRATOR_DESIGN.md`: Architecture brainstorming for agentic orchestration.
   - `ARCHITECTURE.md`: Core system design, skill definitions, and pipeline overview.
-  - `DOC_INDEX.md`: This file.
   - `ROADMAP.md`: Project status and upcoming features.
 - `input_data/`: Directory for input PDF files to be processed.
 - `output_data/`: Final processed data organized by ticker.
@@ -28,3 +28,9 @@
 ## Skills Overview
 
 See `skills/PIPELINE.md` for the full execution flow.
+
+## Local Server Ports
+
+- `Localhost:8000` is tiger_transformer_server.
+- `Localhost:8181` is reserved for agent browser.
+- `Localhost:3000` is frontend_server.

@@ -1,5 +1,5 @@
 @echo off
-echo Starting Tiger-Skills Frontend Server...
+echo Starting Financial-Analyst-Skills Frontend Server...
 echo.
 echo   URL: http://127.0.0.1:3000/?ticker=ADBE
 echo.
